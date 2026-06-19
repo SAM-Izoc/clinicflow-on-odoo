@@ -22,7 +22,30 @@
         <field name="model">clinicflow.pet</field>
         <field name="arch" type="xml">
             <form string="Pet">
+                <!-- Quick Actions Header (CTO feedback - rapid workflow actions) -->
+                <header>
+                    <button name="action_create_appointment_quick" string="+ New Appointment" type="object" class="btn btn-secondary"/>
+                    <button name="action_create_visit_quick" string="+ New Visit" type="object" class="btn btn-secondary"/>
+                    <button name="action_create_prescription_quick" string="+ New Prescription" type="object" class="btn btn-secondary"/>
+                    <button name="action_create_vaccination_quick" string="+ New Vaccination" type="object" class="btn btn-secondary"/>
+                    <button name="action_create_admission_quick" string="+ Admit Patient" type="object" class="btn btn-secondary"/>
+                </header>
                 <sheet>
+                    <!-- Smart Button Box -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_weight_history" type="object" class="oe_stat_button" icon="fa-balance-scale">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value"><field name="last_weight_display"/></span>
+                                <span class="o_stat_text">Weight Logs (<field name="weight_count"/>)</span>
+                            </div>
+                        </button>
+                        <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-credit-card">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Invoices</span>
+                            </div>
+                        </button>
+                    </div>
+
                     <field name="photo" widget="image" class="oe_avatar" options="{'zoom': true, 'preview_image': 'photo'}"/>
                     
                     <div class="oe_title">
@@ -30,6 +53,14 @@
                         <h1>
                             <field name="name" placeholder="e.g. Bella"/>
                         </h1>
+                    </div>
+
+                    <!-- Patient Alerts & Warnings Banner (CTO feedback - prominent top placement) -->
+                    <div class="alert alert-danger mb-2 p-2" role="alert" invisible="not alerts" style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; font-size: 14px; font-weight: bold;">
+                        <span class="fa fa-exclamation-triangle me-2"/>CRITICAL ALERT: <field name="alerts" readonly="1"/>
+                    </div>
+                    <div class="alert alert-warning mb-2 p-2" role="alert" invisible="not allergies" style="color: #856404; background-color: #fff3cd; border-color: #ffeeba; font-size: 14px; font-weight: bold;">
+                        <span class="fa fa-warning me-2"/>ALLERGY WARNING: <field name="allergies" readonly="1"/>
                     </div>
 
                     <!-- Patient Summary Header (CTO feedback - persistent header) -->
@@ -150,11 +181,47 @@
                         <!-- Tab 9: Chronological Timeline Events -->
                         <page string="Timeline" name="timeline">
                             <field name="timeline_ids" readonly="1">
-                                <list string="Timeline Events">
+                                <kanban class="o_kanban_mobile" create="false" delete="false">
+                                    <field name="event_type"/>
                                     <field name="event_date"/>
-                                    <field name="event_type" widget="badge"/>
                                     <field name="name"/>
-                                </list>
+                                    <field name="user_id"/>
+                                    <templates>
+                                        <t t-name="card">
+                                            <div class="d-flex align-items-center p-2 mb-2 border rounded shadow-sm bg-white" style="border-left: 5px solid #007bff !important;">
+                                                <!-- Left Col: Icon based on type -->
+                                                <div class="me-3 text-center" style="width: 40px;">
+                                                    <t t-if="record.event_type.raw_value == 'visit'">
+                                                        <span class="fa fa-stethoscope text-primary fa-lg" title="Visit"/>
+                                                    </t>
+                                                    <t t-elif="record.event_type.raw_value == 'vaccination'">
+                                                        <span class="fa fa-shield text-success fa-lg" title="Vaccination"/>
+                                                    </t>
+                                                    <t t-elif="record.event_type.raw_value == 'prescription'">
+                                                        <span class="fa fa-medkit text-warning fa-lg" title="Prescription"/>
+                                                    </t>
+                                                    <t t-elif="record.event_type.raw_value == 'invoice'">
+                                                        <span class="fa fa-credit-card text-info fa-lg" title="Invoice"/>
+                                                    </t>
+                                                    <t t-elif="record.event_type.raw_value == 'admission'">
+                                                        <span class="fa fa-hospital-o text-danger fa-lg" title="Admission"/>
+                                                    </t>
+                                                </div>
+                                                
+                                                <!-- Right Col: Event content -->
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex justify-content-between">
+                                                        <strong class="text-dark"><field name="name"/></strong>
+                                                        <span class="text-muted small"><field name="event_date"/></span>
+                                                    </div>
+                                                    <div class="text-muted small mt-1">
+                                                        <span class="fa fa-user me-1"/>Logged by: <field name="user_id"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
                             </field>
                         </page>
                     </notebook>

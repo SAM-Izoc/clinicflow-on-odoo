@@ -17,3 +17,5 @@ class ClinicFlowTimelineEvent(models.Model):
     name = fields.Char(string="Event Title", required=True)
     res_model = fields.Char(string="Target Model")
     res_id = fields.Integer(string="Target Record ID")
+    user_id = fields.Many2one('res.users', string="Responsible User", default=lambda self: self.env.user)
+

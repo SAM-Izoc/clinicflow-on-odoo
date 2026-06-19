@@ -8,5 +8,7 @@ access_clinicflow_weight_record,clinicflow.weight.record,model_clinicflow_weight
 access_clinicflow_visit_charge_line,clinicflow.visit.charge.line,model_clinicflow_visit_charge_line,base.group_user,1,1,1,1
 access_clinicflow_admission,clinicflow.admission,model_clinicflow_admission,base.group_user,1,1,1,1
 access_clinicflow_timeline_event,clinicflow.timeline.event,model_clinicflow_timeline_event,base.group_user,1,1,1,1
+access_clinicflow_dashboard,clinicflow.dashboard,model_clinicflow_dashboard,base.group_user,1,1,1,1
+
 
 

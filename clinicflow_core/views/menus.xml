@@ -13,6 +13,16 @@
             </field>
         </record>
 
+        <!-- Recent Patients Server Action -->
+        <record id="action_clinicflow_pet_recent" model="ir.actions.server">
+            <field name="name">Recent Patients</field>
+            <field name="model_id" ref="model_clinicflow_pet"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = env.user.action_view_recent_pets()
+            </field>
+        </record>
+
         <record id="action_clinicflow_admission" model="ir.actions.act_window">
             <field name="name">Hospitalizations</field>
             <field name="res_model">clinicflow.admission</field>
@@ -58,11 +68,24 @@
             </field>
         </record>
 
+        <!-- Dashboard Server Action -->
+        <record id="action_clinicflow_dashboard_open" model="ir.actions.server">
+            <field name="name">Operations Dashboard</field>
+            <field name="model_id" ref="model_clinicflow_dashboard"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = env['clinicflow.dashboard'].action_open_dashboard()
+            </field>
+        </record>
+
         <!-- Top-level Menu -->
         <menuitem id="menu_clinicflow_root" name="ClinicFlow" sequence="5"/>
 
         <!-- Primary Menus -->
         <menuitem id="menu_clinicflow_patients" name="Patients" parent="menu_clinicflow_root" action="action_clinicflow_pet" sequence="10"/>
+        
+        <!-- Recent Patients (points to the recent patients server action) -->
+        <menuitem id="menu_clinicflow_patients_recent" name="Recent Patients" parent="menu_clinicflow_root" action="action_clinicflow_pet_recent" sequence="12"/>
         
         <!-- Appointments (pointing to Odoo calendar.action_calendar_event) -->
         <menuitem id="menu_clinicflow_appointments" name="Appointments" parent="menu_clinicflow_root" action="calendar.action_calendar_event" sequence="15"/>
@@ -71,6 +94,9 @@
         
         <!-- Billing (pointing to Odoo account.action_move_out_invoice_type) -->
         <menuitem id="menu_clinicflow_billing" name="Billing" parent="menu_clinicflow_root" action="account.action_move_out_invoice_type" sequence="25"/>
+
+        <!-- Dashboards Menu -->
+        <menuitem id="menu_clinicflow_dashboard" name="Dashboards" parent="menu_clinicflow_root" action="action_clinicflow_dashboard_open" sequence="30"/>
 
         <!-- Operations Submenu (Global lists for managers) -->
         <menuitem id="menu_clinicflow_operations_root" name="Operations" parent="menu_clinicflow_root" sequence="100"/>

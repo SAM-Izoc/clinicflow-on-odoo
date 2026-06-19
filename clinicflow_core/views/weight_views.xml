@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Weight Graph View -->
+    <record id="view_clinicflow_weight_record_graph" model="ir.ui.view">
+        <field name="name">clinicflow.weight.record.graph</field>
+        <field name="model">clinicflow.weight.record</field>
+        <field name="arch" type="xml">
+            <graph string="Weight History" type="line" sample="1">
+                <field name="date" interval="day"/>
+                <field name="weight" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Weight List View -->
+    <record id="view_clinicflow_weight_record_tree" model="ir.ui.view">
+        <field name="name">clinicflow.weight.record.list</field>
+        <field name="model">clinicflow.weight.record</field>
+        <field name="arch" type="xml">
+            <list string="Weight Records" editable="bottom">
+                <field name="pet_id" invisible="context.get('default_pet_id')"/>
+                <field name="date"/>
+                <field name="weight"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Weight Form View -->
+    <record id="view_clinicflow_weight_record_form" model="ir.ui.view">
+        <field name="name">clinicflow.weight.record.form</field>
+        <field name="model">clinicflow.weight.record</field>
+        <field name="arch" type="xml">
+            <form string="Weight Record">
+                <sheet>
+                    <group>
+                        <field name="pet_id"/>
+                        <field name="date"/>
+                        <field name="weight"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Server action to dynamically construct a dashboard record and open it -->
+    <record id="action_clinicflow_dashboard_open" model="ir.actions.server">
+        <field name="name">Operations Dashboard</field>
+        <field name="model_id" ref="model_clinicflow_dashboard"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = env['clinicflow.dashboard'].action_open_dashboard()
+        </field>
+    </record>
+
+    <!-- Form View representing the Dashboard -->
+    <record id="view_clinicflow_dashboard_form" model="ir.ui.view">
+        <field name="name">clinicflow.dashboard.form</field>
+        <field name="model">clinicflow.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="ClinicFlow Dashboard" create="false" edit="false" delete="false">
+                <sheet>
+                    <div class="o_control_panel mb-4">
+                        <h1 class="text-primary"><span class="fa fa-tachometer me-2"/>ClinicFlow Practice Dashboard</h1>
+                        <p class="text-muted">Real-time metrics compiled across scheduling, clinical consultations, and financial modules.</p>
+                    </div>
+
+                    <!-- Row 1: Reception Team KPIs -->
+                    <h3 class="border-bottom pb-2 mb-3 text-secondary"><span class="fa fa-users me-2"/>Reception Queue</h3>
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-light border-primary mb-3 text-center">
+                                <div class="card-body py-3">
+                                    <h6 class="card-title text-muted text-uppercase small">Today's Appointments</h6>
+                                    <h2 class="card-text text-primary font-weight-bold"><field name="reception_today_appointments" readonly="1"/></h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light border-warning mb-3 text-center">
+                                <div class="card-body py-3">
+                                    <h6 class="card-title text-muted text-uppercase small">Waiting Queue</h6>
+                                    <h2 class="card-text text-warning font-weight-bold"><field name="reception_waiting" readonly="1"/></h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light border-success mb-3 text-center">
+                                <div class="card-body py-3">
+                                    <h6 class="card-title text-muted text-uppercase small">Checked In</h6>
+                                    <h2 class="card-text text-success font-weight-bold"><field name="reception_checked_in" readonly="1"/></h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light border-info mb-3 text-center">
+                                <div class="card-body py-3">
+                                    <h6 class="card-title text-muted text-uppercase small">Billing Pending</h6>
+                                    <h2 class="card-text text-info font-weight-bold"><field name="reception_billing_pending" readonly="1"/></h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Vet Team KPIs -->
+                    <h3 class="border-bottom pb-2 mb-3 text-secondary"><span class="fa fa-stethoscope me-2"/>Veterinary &amp; Clinical</h3>
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card bg-light border-primary mb-3 text-center">
+                                <div class="card-body py-3">
+                                    <h6 class="card-title text-muted text-uppercase small">Active Patients Today</h6>
+                                    <h2 class="card-text text-primary font-weight-bold"><field name="vet_today_patients" readonly="1"/></h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light border-warning mb-3 text-center">
+                                <div class="card-body py-3">
+                                    <h6 class="card-title text-muted text-uppercase small">Open SOAP Consultations</h6>
+                                    <h2 class="card-text text-warning font-weight-bold"><field name="vet_open_consultations" readonly="1"/></h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light border-danger mb-3 text-center">
+                                <div class="card-body py-3">
+                                    <h6 class="card-title text-muted text-uppercase small">Hospitalized Patients</h6>
+                                    <h2 class="card-text text-danger font-weight-bold"><field name="vet_hospitalized" readonly="1"/></h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Management KPIs -->
+                    <h3 class="border-bottom pb-2 mb-3 text-secondary"><span class="fa fa-line-chart me-2"/>Financial &amp; Management</h3>
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card bg-light border-success mb-3 text-center">
+                                <div class="card-body py-3">
+                                    <h6 class="card-title text-muted text-uppercase small">Revenue Today</h6>
+                                    <h2 class="card-text text-success font-weight-bold"><field name="mgmt_revenue_today" widget="monetary" readonly="1"/></h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light border-primary mb-3 text-center">
+                                <div class="card-body py-3">
+                                    <h6 class="card-title text-muted text-uppercase small">Patients Seen (Completed)</h6>
+                                    <h2 class="card-text text-primary font-weight-bold"><field name="mgmt_patients_seen" readonly="1"/></h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light border-info mb-3 text-center">
+                                <div class="card-body py-3">
+                                    <h6 class="card-title text-muted text-uppercase small">Outstanding Invoices Balance</h6>
+                                    <h2 class="card-text text-info font-weight-bold"><field name="mgmt_outstanding_invoices" widget="monetary" readonly="1"/></h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
