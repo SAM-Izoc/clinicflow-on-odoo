@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_clinicflow" model="ir.ui.view">
+        <field name="name">res.partner.form.clinicflow</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Pets &amp; Patients" name="pets_and_patients">
+                    <group>
+                        <field name="is_pet_owner"/>
+                    </group>
+                    <field name="pet_ids" context="{'default_owner_id': id}">
+                        <list string="Pets">
+                            <field name="name"/>
+                            <field name="species"/>
+                            <field name="breed"/>
+                            <field name="gender"/>
+                            <field name="dob"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

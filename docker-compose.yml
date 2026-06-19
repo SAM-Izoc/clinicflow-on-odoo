@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  odoo_clinicflow:
+    image: odoo:19.0
+    container_name: odoo_clinicflow_dev
+    ports:
+      - "8070:8069"
+    volumes:
+      - odoo-clinicflow-web-data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - .:/mnt/extra-addons
+    environment:
+      - HOST=postgres_dev
+      - PORT=5432
+      - USER=odoo
+      - PASSWORD=odoo
+    command: odoo --db-filter=^odoo-clinicflow-db$$
+    networks:
+      - sam-agent-platform_default
+    restart: unless-stopped
+
+volumes:
+  odoo-clinicflow-web-data:
+
+networks:
+  sam-agent-platform_default:
+    external: true

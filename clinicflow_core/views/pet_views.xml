@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_clinicflow_pet_tree" model="ir.ui.view">
+        <field name="name">clinicflow.pet.list</field>
+        <field name="model">clinicflow.pet</field>
+        <field name="arch" type="xml">
+            <list string="Pets">
+                <field name="name"/>
+                <field name="species"/>
+                <field name="breed"/>
+                <field name="gender"/>
+                <field name="dob"/>
+                <field name="owner_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View (Patient 360 Workspace) -->
+    <record id="view_clinicflow_pet_form" model="ir.ui.view">
+        <field name="name">clinicflow.pet.form</field>
+        <field name="model">clinicflow.pet</field>
+        <field name="arch" type="xml">
+            <form string="Pet">
+                <sheet>
+                    <field name="photo" widget="image" class="oe_avatar" options="{'zoom': true, 'preview_image': 'photo'}"/>
+                    
+                    <div class="oe_title">
+                        <label for="name" string="Pet Name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Bella"/>
+                        </h1>
+                    </div>
+
+                    <!-- Patient Summary Header (CTO feedback - persistent header) -->
+                    <group>
+                        <group string="Quick Details">
+                            <field name="species"/>
+                            <field name="breed"/>
+                            <field name="gender"/>
+                            <field name="age_display" readonly="1"/>
+                        </group>
+                        <group string="Owner &amp; Warnings">
+                            <field name="owner_id"/>
+                            <field name="emergency_contact"/>
+                            <field name="alerts" placeholder="No clinical alerts" style="color: red; font-weight: bold;"/>
+                        </group>
+                    </group>
+
+                    <!-- Patient 360 Notebook Workspace -->
+                    <notebook>
+                        <!-- Tab 1: Profile & Weights -->
+                        <page string="Profile" name="profile">
+                            <group string="Weight History">
+                                <field name="weight_ids" nolabel="1">
+                                    <list string="Weight Records" editable="bottom">
+                                        <field name="date"/>
+                                        <field name="weight"/>
+                                        <field name="notes"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group string="General Info">
+                                <field name="notes" placeholder="Enter other general notes here..."/>
+                                <field name="microchip"/>
+                            </group>
+                        </page>
+
+                        <!-- Tab 2: Persistent Health Info -->
+                        <page string="Medical History" name="medical_history">
+                            <group>
+                                <field name="chronic_conditions" placeholder="e.g. Diabetes, Hip Dysplasia..."/>
+                                <field name="allergies" placeholder="e.g. Penicillin allergy, Chicken protein..."/>
+                                <field name="surgical_history" placeholder="e.g. Neutered on 2024-05-12, Fracture repair on 2025-08-01..."/>
+                            </group>
+                        </page>
+
+                        <!-- Tab 3: Clinic Visits -->
+                        <page string="Visits" name="visits">
+                            <field name="visit_ids" readonly="1">
+                                <list string="Visits">
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="vet_id"/>
+                                    <field name="status" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Tab 4: Vaccination logs -->
+                        <page string="Vaccinations" name="vaccinations">
+                            <field name="vaccination_ids" readonly="1">
+                                <list string="Vaccinations">
+                                    <field name="vaccine_product_id"/>
+                                    <field name="date_administered"/>
+                                    <field name="date_due"/>
+                                    <field name="status" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Tab 5: Prescription history -->
+                        <page string="Prescriptions" name="prescriptions">
+                            <field name="prescription_ids" readonly="1">
+                                <list string="Prescriptions">
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Tab 6: Hospitalizations -->
+                        <page string="Hospitalizations" name="hospitalizations">
+                            <field name="admission_ids" readonly="1">
+                                <list string="Hospitalizations">
+                                    <field name="name"/>
+                                    <field name="admission_date"/>
+                                    <field name="discharge_date"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Tab 7: Billing & Invoices -->
+                        <page string="Billing &amp; Invoices" name="billing">
+                            <field name="invoice_ids" readonly="1">
+                                <list string="Invoices">
+                                    <field name="name"/>
+                                    <field name="invoice_date"/>
+                                    <field name="amount_total" sum="Total Invoiced"/>
+                                    <field name="payment_state" widget="badge"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Tab 8: Documents / ir.attachment -->
+                        <page string="Documents" name="documents">
+                            <field name="attachment_ids">
+                                <list string="Documents" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="create_date" readonly="1"/>
+                                    <field name="create_uid" readonly="1"/>
+                                    <field name="type"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Tab 9: Chronological Timeline Events -->
+                        <page string="Timeline" name="timeline">
+                            <field name="timeline_ids" readonly="1">
+                                <list string="Timeline Events">
+                                    <field name="event_date"/>
+                                    <field name="event_type" widget="badge"/>
+                                    <field name="name"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

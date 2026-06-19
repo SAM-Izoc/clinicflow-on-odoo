@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_clinicflow_visit_tree" model="ir.ui.view">
+        <field name="name">clinicflow.visit.list</field>
+        <field name="model">clinicflow.visit</field>
+        <field name="arch" type="xml">
+            <list string="Visits">
+                <field name="name"/>
+                <field name="pet_id"/>
+                <field name="owner_id"/>
+                <field name="vet_id"/>
+                <field name="date"/>
+                <field name="status" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Calendar View -->
+    <record id="view_clinicflow_visit_calendar" model="ir.ui.view">
+        <field name="name">clinicflow.visit.calendar</field>
+        <field name="model">clinicflow.visit</field>
+        <field name="arch" type="xml">
+            <calendar string="Visits Schedule" date_start="date" color="vet_id" quick_create="0">
+                <field name="pet_id"/>
+                <field name="owner_id"/>
+                <field name="vet_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_clinicflow_visit_form" model="ir.ui.view">
+        <field name="name">clinicflow.visit.form</field>
+        <field name="model">clinicflow.visit</field>
+        <field name="arch" type="xml">
+            <form string="Visit">
+                <header>
+                    <button name="action_create_invoice" string="Create Invoice" type="object" class="oe_highlight" invisible="invoice_id or status != 'billing'"/>
+                    <field name="status" widget="statusbar" statusbar_visible="booked,check_in,waiting,consultation,treatment,billing,completed" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="pet_id"/>
+                            <field name="owner_id"/>
+                        </group>
+                        <group>
+                            <field name="vet_id"/>
+                            <field name="date"/>
+                            <field name="event_id"/>
+                            <field name="invoice_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="SOAP Clinical Notes" name="soap_notes">
+                            <group>
+                                <field name="soap_s" placeholder="Subjective: Owner reports coughing and lethargy..."/>
+                                <field name="soap_o" placeholder="Objective: Physical exam reveals temperature 39.1C, clear lung sounds..."/>
+                                <field name="soap_a" placeholder="Assessment: Mild upper respiratory tract infection..."/>
+                                <field name="soap_p" placeholder="Plan: Administer antibiotic injection, prescribe oral tablets for 5 days..."/>
+                            </group>
+                        </page>
+                        <page string="Prescriptions" name="prescriptions">
+                            <field name="prescription_ids">
+                                <list string="Prescriptions">
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Charges &amp; Invoicing" name="charges_invoicing">
+                            <field name="charge_line_ids">
+                                <list string="Charges" editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

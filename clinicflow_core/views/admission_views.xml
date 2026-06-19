@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_clinicflow_admission_tree" model="ir.ui.view">
+        <field name="name">clinicflow.admission.list</field>
+        <field name="model">clinicflow.admission</field>
+        <field name="arch" type="xml">
+            <list string="Hospitalizations">
+                <field name="name"/>
+                <field name="pet_id"/>
+                <field name="owner_id"/>
+                <field name="admission_date"/>
+                <field name="discharge_date"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_clinicflow_admission_form" model="ir.ui.view">
+        <field name="name">clinicflow.admission.form</field>
+        <field name="model">clinicflow.admission</field>
+        <field name="arch" type="xml">
+            <form string="Hospitalization Admission">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="admitted,discharged" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="pet_id"/>
+                            <field name="owner_id"/>
+                            <field name="visit_id"/>
+                        </group>
+                        <group>
+                            <field name="admission_date"/>
+                            <field name="discharge_date"/>
+                        </group>
+                    </group>
+                    <group string="Admission Reason">
+                        <field name="reason" placeholder="Enter clinical reasons, surgical observations, overnight requirements..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
