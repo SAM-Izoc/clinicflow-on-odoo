@@ -49,6 +49,7 @@
                         <group>
                             <field name="pet_id"/>
                             <field name="owner_id"/>
+                            <field name="reason_for_visit"/>
                         </group>
                         <group>
                             <field name="vet_id"/>

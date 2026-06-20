@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Action for Vaccinations Due -->
+        <record id="action_clinicflow_vaccinations_due" model="ir.actions.act_window">
+            <field name="name">Vaccinations Due</field>
+            <field name="res_model">clinicflow.vaccination</field>
+            <field name="view_mode">list,pivot,graph,form</field>
+            <field name="domain">[('status', 'in', ['scheduled', 'overdue'])]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No vaccinations due or overdue!
+                </p>
+            </field>
+        </record>
+
+        <!-- Custom List View for Outstanding Invoices -->
+        <record id="view_account_move_outstanding_tree" model="ir.ui.view">
+            <field name="name">account.move.outstanding.list</field>
+            <field name="model">account.move</field>
+            <field name="priority" eval="99"/>
+            <field name="arch" type="xml">
+                <list string="Outstanding Balances" create="false" edit="false">
+                    <field name="partner_id" string="Owner"/>
+                    <field name="pet_id" string="Pet Patient"/>
+                    <field name="name" string="Invoice Ref"/>
+                    <field name="invoice_date" string="Invoice Date"/>
+                    <field name="invoice_date_due" string="Due Date"/>
+                    <field name="amount_total" sum="Total Invoiced"/>
+                    <field name="amount_residual" string="Amount Due" sum="Total Outstanding"/>
+                    <field name="payment_state" widget="badge"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Action for Outstanding Balances -->
+        <record id="action_clinicflow_outstanding_balances" model="ir.actions.act_window">
+            <field name="name">Outstanding Balances</field>
+            <field name="res_model">account.move</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('move_type', '=', 'out_invoice'), ('state', '=', 'posted'), ('payment_state', 'not in', ['paid', 'in_payment']), ('pet_id', '!=', False)]</field>
+            <field name="view_id" ref="view_account_move_outstanding_tree"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Great! All invoice balances are fully paid.
+                </p>
+            </field>
+        </record>
+
+        <!-- Action for Daily Activity (completed visits today) -->
+        <record id="action_clinicflow_daily_activity" model="ir.actions.act_window">
+            <field name="name">Daily Visits &amp; Activity</field>
+            <field name="res_model">clinicflow.visit</field>
+            <field name="view_mode">list,pivot,graph,form</field>
+            <field name="domain">[('date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No clinical visits logged today yet.
+                </p>
+            </field>
+        </record>
+
+        <!-- Reports Submenu -->
+        <menuitem id="menu_clinicflow_reports_root" name="Reports" parent="menu_clinicflow_root" sequence="40"/>
+        <menuitem id="menu_clinicflow_reports_vaccinations_due" name="Vaccinations Due" parent="menu_clinicflow_reports_root" action="action_clinicflow_vaccinations_due" sequence="10"/>
+        <menuitem id="menu_clinicflow_reports_outstanding_balances" name="Outstanding Balances" parent="menu_clinicflow_reports_root" action="action_clinicflow_outstanding_balances" sequence="20"/>
+        <menuitem id="menu_clinicflow_reports_daily_activity" name="Daily Activity Summary" parent="menu_clinicflow_reports_root" action="action_clinicflow_daily_activity" sequence="30"/>
+    </data>
+</odoo>

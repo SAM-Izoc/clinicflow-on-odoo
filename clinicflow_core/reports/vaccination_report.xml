@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- PDF Report Action -->
+    <record id="action_report_vaccinations_due" model="ir.actions.report">
+        <field name="name">Vaccinations Due Summary</field>
+        <field name="model">clinicflow.vaccination</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">clinicflow_core.report_vaccinations_due_template</field>
+        <field name="report_file">clinicflow_core.report_vaccinations_due_template</field>
+        <field name="binding_model_id" ref="model_clinicflow_vaccination"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- QWeb Template -->
+    <template id="report_vaccinations_due_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <div class="text-center mb-4" style="border-bottom: 2px solid #28a745; padding-bottom: 10px;">
+                        <h2>ClinicFlow Vet OS</h2>
+                        <h3>Vaccinations Due &amp; Overdue Summary</h3>
+                        <h5 t-esc="context_today().strftime('%B %d, %Y')"/>
+                    </div>
+
+                    <table class="table table-sm table-striped mt-4">
+                        <thead>
+                            <tr>
+                                <th>Pet Patient</th>
+                                <th>Species/Breed</th>
+                                <th>Owner</th>
+                                <th>Vaccine Product</th>
+                                <th>Date Administered</th>
+                                <th>Date Due</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="doc">
+                                <tr>
+                                    <td><strong><span t-field="doc.pet_id.name"/></strong></td>
+                                    <td><span t-field="doc.pet_id.species"/> / <span t-field="doc.pet_id.breed"/></td>
+                                    <td><span t-field="doc.owner_id.name"/></td>
+                                    <td><span t-field="doc.vaccine_product_id.name"/></td>
+                                    <td><span t-field="doc.date_administered"/></td>
+                                    <td><span t-field="doc.date_due"/></td>
+                                    <td><span t-field="doc.status"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

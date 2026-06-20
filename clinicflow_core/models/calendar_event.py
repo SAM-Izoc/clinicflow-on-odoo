@@ -26,6 +26,25 @@ class CalendarEvent(models.Model):
         ('cancelled', 'Cancelled')
     ], string="Appointment Status", default='scheduled', required=True)
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        events = super().create(vals_list)
+        events.mapped('pet_id').modified(['upcoming_appointment_date'])
+        return events
+
+    def write(self, vals):
+        old_pets = self.mapped('pet_id')
+        res = super().write(vals)
+        if 'start' in vals or 'pet_id' in vals or 'active' in vals or 'appointment_status' in vals:
+            (old_pets | self.mapped('pet_id')).modified(['upcoming_appointment_date'])
+        return res
+
+    def unlink(self):
+        pets = self.mapped('pet_id')
+        res = super().unlink()
+        pets.modified(['upcoming_appointment_date'])
+        return res
+
     def action_check_in_pet(self):
         """ Checks in the pet from the calendar appointment by creating a ClinicFlow Visit """
         self.ensure_one()

@@ -44,6 +44,11 @@ class ClinicFlowPet(models.Model):
     last_weight = fields.Float(string="Last Weight", compute="_compute_weight_metrics")
     last_weight_display = fields.Char(string="Last Weight Display", compute="_compute_weight_metrics")
 
+    # Stored computed search metrics
+    last_visit_date = fields.Date(string="Last Visit", compute="_compute_quick_info", store=True)
+    outstanding_balance = fields.Float(string="Outstanding Balance", compute="_compute_quick_info", store=True)
+    upcoming_appointment_date = fields.Datetime(string="Upcoming Appointment", compute="_compute_quick_info", store=True)
+
     # One2many relations
     visit_ids = fields.One2many('clinicflow.visit', 'pet_id', string="Visits")
     vaccination_ids = fields.One2many('clinicflow.vaccination', 'pet_id', string="Vaccinations")
@@ -53,6 +58,7 @@ class ClinicFlowPet(models.Model):
     weight_ids = fields.One2many('clinicflow.weight.record', 'pet_id', string="Weight History")
     timeline_ids = fields.One2many('clinicflow.timeline.event', 'pet_id', string="Timeline Events")
     attachment_ids = fields.One2many('ir.attachment', 'res_id', domain=[('res_model', '=', 'clinicflow.pet')], string="Documents")
+    appointment_ids = fields.One2many('calendar.event', 'pet_id', string="Appointments")
 
     @api.depends('dob')
     def _compute_age_display(self):
@@ -94,6 +100,30 @@ class ClinicFlowPet(models.Model):
             else:
                 rec.last_weight = 0.0
                 rec.last_weight_display = "No records"
+
+    @api.depends('visit_ids.date', 'visit_ids.status', 
+                 'invoice_ids.amount_residual', 'invoice_ids.state', 'invoice_ids.payment_state',
+                 'appointment_ids.start', 'appointment_ids.pet_id')
+    def _compute_quick_info(self):
+        today = fields.Datetime.now()
+        for rec in self:
+            # 1. Stored Last Visit Date
+            completed_visits = rec.visit_ids.filtered(lambda v: v.status == 'completed' and v.date)
+            if completed_visits:
+                rec.last_visit_date = completed_visits.sorted('date', reverse=True)[0].date.date()
+            else:
+                rec.last_visit_date = False
+
+            # 2. Stored Outstanding Balance
+            posted_invoices = rec.invoice_ids.filtered(lambda i: i.state == 'posted' and i.payment_state not in ['paid', 'in_payment'])
+            rec.outstanding_balance = sum(posted_invoices.mapped('amount_residual'))
+
+            # 3. Stored Upcoming Appointment Date
+            future_events = rec.appointment_ids.filtered(lambda e: e.start and e.start > today)
+            if future_events:
+                rec.upcoming_appointment_date = future_events.sorted('start')[0].start
+            else:
+                rec.upcoming_appointment_date = False
 
     @api.model
     def read(self, fields_to_read, load='_load'):

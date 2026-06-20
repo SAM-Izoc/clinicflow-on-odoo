@@ -10,9 +10,34 @@
                 <field name="species"/>
                 <field name="breed"/>
                 <field name="gender"/>
-                <field name="dob"/>
+                <field name="age_display" string="Age"/>
                 <field name="owner_id"/>
+                <field name="last_visit_date"/>
+                <field name="last_weight"/>
+                <field name="outstanding_balance" sum="Total Outstanding"/>
+                <field name="upcoming_appointment_date"/>
             </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_clinicflow_pet_search" model="ir.ui.view">
+        <field name="name">clinicflow.pet.search</field>
+        <field name="model">clinicflow.pet</field>
+        <field name="arch" type="xml">
+            <search string="Search Pets">
+                <field name="name" string="Pet Name"/>
+                <field name="owner_id" string="Owner"/>
+                <field name="microchip" string="Microchip"/>
+                <filter string="Dogs" name="dogs" domain="[('species', '=', 'dog')]"/>
+                <filter string="Cats" name="cats" domain="[('species', '=', 'cat')]"/>
+                <separator/>
+                <filter string="Has Outstanding Balance" name="has_balance" domain="[('outstanding_balance', '&gt;', 0)]"/>
+                <filter string="Has Upcoming Appointment" name="has_appointment" domain="[('upcoming_appointment_date', '!=', False)]"/>
+                <separator/>
+                <filter string="Group by Owner" name="group_owner" context="{'group_by': 'owner_id'}"/>
+                <filter string="Group by Species" name="group_species" context="{'group_by': 'species'}"/>
+            </search>
         </field>
     </record>
 

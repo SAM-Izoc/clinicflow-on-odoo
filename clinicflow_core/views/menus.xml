@@ -81,7 +81,11 @@
         <!-- Top-level Menu -->
         <menuitem id="menu_clinicflow_root" name="ClinicFlow" sequence="5"/>
 
+
+
         <!-- Primary Menus -->
+        <!-- Dashboards Menu -->
+        <menuitem id="menu_clinicflow_dashboard" name="Dashboards" parent="menu_clinicflow_root" action="action_clinicflow_dashboard_open" sequence="30"/>
         <menuitem id="menu_clinicflow_patients" name="Patients" parent="menu_clinicflow_root" action="action_clinicflow_pet" sequence="10"/>
         
         <!-- Recent Patients (points to the recent patients server action) -->
@@ -95,8 +99,7 @@
         <!-- Billing (pointing to Odoo account.action_move_out_invoice_type) -->
         <menuitem id="menu_clinicflow_billing" name="Billing" parent="menu_clinicflow_root" action="account.action_move_out_invoice_type" sequence="25"/>
 
-        <!-- Dashboards Menu -->
-        <menuitem id="menu_clinicflow_dashboard" name="Dashboards" parent="menu_clinicflow_root" action="action_clinicflow_dashboard_open" sequence="30"/>
+        
 
         <!-- Operations Submenu (Global lists for managers) -->
         <menuitem id="menu_clinicflow_operations_root" name="Operations" parent="menu_clinicflow_root" sequence="100"/>

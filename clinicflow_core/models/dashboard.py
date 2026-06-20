@@ -9,6 +9,7 @@ class ClinicFlowDashboard(models.TransientModel):
     reception_waiting = fields.Integer(string="Waiting Queue", compute="_compute_metrics")
     reception_checked_in = fields.Integer(string="Checked In", compute="_compute_metrics")
     reception_billing_pending = fields.Integer(string="Billing Pending Visits", compute="_compute_metrics")
+    reception_no_shows = fields.Integer(string="No Shows Today", compute="_compute_metrics")
 
     vet_today_patients = fields.Integer(string="Today's Patients", compute="_compute_metrics")
     vet_open_consultations = fields.Integer(string="Open SOAP Consultations", compute="_compute_metrics")
@@ -24,6 +25,11 @@ class ClinicFlowDashboard(models.TransientModel):
 
         # 1. Appointments starting today
         appointments = self.env['calendar.event'].search([
+            ('start', '>=', today_start),
+            ('start', '<=', today_end)
+        ])
+        no_shows = self.env['calendar.event'].search([
+            ('appointment_status', '=', 'no_show'),
             ('start', '>=', today_start),
             ('start', '<=', today_end)
         ])
@@ -84,6 +90,7 @@ class ClinicFlowDashboard(models.TransientModel):
             rec.reception_waiting = len(waiting_visits)
             rec.reception_checked_in = len(checked_in_visits)
             rec.reception_billing_pending = len(billing_visits)
+            rec.reception_no_shows = len(no_shows)
 
             rec.vet_today_patients = today_patients_count
             rec.vet_open_consultations = len(consultations)

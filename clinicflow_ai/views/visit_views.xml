@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_clinicflow_visit_form_ai" model="ir.ui.view">
+        <field name="name">clinicflow.visit.form.ai</field>
+        <field name="model">clinicflow.visit</field>
+        <field name="inherit_id" ref="clinicflow_core.view_clinicflow_visit_form"/>
+        <field name="arch" type="xml">
+            <!-- Add AI button in header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_generate_ai_soap" string="Generate AI SOAP" type="object" class="btn btn-primary" invisible="status != 'consultation' or is_ai_generated"/>
+            </xpath>
+            
+            <!-- Add AI Audit Banner and fields inside SOAP tab -->
+            <xpath expr="//page[@name='soap_notes']" position="inside">
+                <div class="alert alert-info mt-2 mb-2 p-2" role="alert" invisible="not is_ai_generated" style="color: #0c5460; background-color: #d1ecf1; border-color: #bee5eb; font-size: 14px; font-weight: bold;">
+                    <span class="fa fa-info-circle me-2"/>AI-Generated Charting
+                    (Provider: <field name="ai_provider" class="oe_inline"/>, 
+                    Date: <field name="ai_generated_date" class="oe_inline"/>)
+                    <span invisible="not is_ai_edited" class="ms-3 text-warning">
+                        <span class="fa fa-edit me-1"/>Edited by: <field name="ai_edited_by" class="oe_inline"/>
+                    </span>
+                </div>
+                <group string="AI Charting Audit Details" invisible="not is_ai_generated">
+                    <group>
+                        <field name="is_ai_generated" string="AI Created"/>
+                        <field name="ai_provider"/>
+                        <field name="ai_generated_date"/>
+                    </group>
+                    <group>
+                        <field name="ai_approved_by"/>
+                        <field name="is_ai_edited" string="Clinician Edited"/>
+                        <field name="ai_edited_by" invisible="not is_ai_edited"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

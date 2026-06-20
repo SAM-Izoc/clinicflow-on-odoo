@@ -21,6 +21,8 @@ class ClinicFlowVisit(models.Model):
         ('completed', 'Completed')
     ], string="Status", default='booked', required=True)
 
+    reason_for_visit = fields.Char(string="Reason for Visit", default="Routine checkup", required=True)
+
     # SOAP clinical documentation
     soap_s = fields.Text(string="Subjective (S)", help="Symptons, owner concerns, history")
     soap_o = fields.Text(string="Objective (O)", help="Physical exam findings, vitals, test results")
