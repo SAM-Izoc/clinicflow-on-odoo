@@ -7,7 +7,7 @@ from playwright.async_api import async_playwright
 BASE_URL = os.environ.get("ODOO_URL", "http://localhost:8070")
 DB_NAME = os.environ.get("ODOO_DB", "odoo-db-clean")
 USERNAME = os.environ.get("ODOO_USER", "admin")
-PASSWORD = os.environ.get("ODOO_PASSWORD", "admin")
+PASSWORD = os.environ.get("ODOO_PASSWORD", "Admin@Forgot2026")
 
 async def run_browser_tests():
     print("==================================================")
