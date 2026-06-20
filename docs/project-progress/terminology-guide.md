@@ -26,7 +26,7 @@ The table below contrasts what the clinical staff sees in the ClinicFlow UI vers
 | **Hospitalizations** | `clinicflow.admission` | Hospital stays (admissions/discharges/procedures). |
 | **Prescriptions** | `clinicflow.prescription` (Architectural *Order*) | Clinical medication instructions (linked to inventory items). |
 | **Vaccinations** | `clinicflow.vaccination` (Architectural *Order*) | Immunization log and due reminders. |
-| **Billing** / **Invoices** | `account.move` | Financial invoices linked directly to the patient's owner. |
+| **Billing** / **Invoices** | `account.move` | Financial invoices linked directly to the patient's owner.<br/>*Note: Odoo uses the term "move" because, in accounting, an invoice is a double-entry "journal entry" or "accounting move" that transfers balances. The `move_type` (e.g. `out_invoice`) determines if it is an Invoice, Bill, or general journal entry.* |
 
 ---
 
