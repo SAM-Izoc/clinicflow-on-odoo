@@ -15,7 +15,7 @@ services:
       - PORT=5432
       - USER=odoo
       - PASSWORD=odoo
-    command: odoo --db-filter=^odoo-clinicflow-db$$
+    command: odoo --db-filter=^odoo-.*$$
     networks:
       - sam-agent-platform_default
     restart: unless-stopped

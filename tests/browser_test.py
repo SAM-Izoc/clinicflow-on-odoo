@@ -5,7 +5,7 @@ from playwright.async_api import async_playwright
 
 # Configuration settings
 BASE_URL = os.environ.get("ODOO_URL", "http://localhost:8070")
-DB_NAME = os.environ.get("ODOO_DB", "odoo-clinicflow-db")
+DB_NAME = os.environ.get("ODOO_DB", "odoo-db-clean")
 USERNAME = os.environ.get("ODOO_USER", "admin")
 PASSWORD = os.environ.get("ODOO_PASSWORD", "admin")
 
