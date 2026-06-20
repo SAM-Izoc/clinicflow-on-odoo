@@ -85,7 +85,7 @@
 
         <!-- Primary Menus -->
         <!-- Dashboards Menu -->
-        <menuitem id="menu_clinicflow_dashboard" name="Dashboards" parent="menu_clinicflow_root" action="action_clinicflow_dashboard_open" sequence="30"/>
+        <menuitem id="menu_clinicflow_dashboard" name="Dashboards" parent="menu_clinicflow_root" action="action_clinicflow_dashboard_open" sequence="1"/>
         <menuitem id="menu_clinicflow_patients" name="Patients" parent="menu_clinicflow_root" action="action_clinicflow_pet" sequence="10"/>
         
         <!-- Recent Patients (points to the recent patients server action) -->
