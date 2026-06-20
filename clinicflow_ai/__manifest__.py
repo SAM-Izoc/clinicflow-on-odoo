@@ -7,7 +7,7 @@
     'website': 'https://clinicflow.ai',
     'depends': [
         'base',
-        'clinicflow_core',
+        'clinicflow_clinical',
     ],
     'data': [
         'security/ir.model.access.csv',

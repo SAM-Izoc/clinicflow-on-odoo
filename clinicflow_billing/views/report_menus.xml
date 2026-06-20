@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Custom List View for Outstanding Invoices -->
+    <record id="view_account_move_outstanding_tree" model="ir.ui.view">
+        <field name="name">account.move.outstanding.list</field>
+        <field name="model">account.move</field>
+        <field name="priority" eval="99"/>
+        <field name="arch" type="xml">
+            <list string="Outstanding Balances" create="false" edit="false">
+                <field name="partner_id" string="Owner"/>
+                <field name="pet_id" string="Pet Patient"/>
+                <field name="name" string="Invoice Ref"/>
+                <field name="invoice_date" string="Invoice Date"/>
+                <field name="invoice_date_due" string="Due Date"/>
+                <field name="amount_total" sum="Total Invoiced"/>
+                <field name="amount_residual" string="Amount Due" sum="Total Outstanding"/>
+                <field name="payment_state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action for Outstanding Balances -->
+    <record id="action_clinicflow_outstanding_balances" model="ir.actions.act_window">
+        <field name="name">Outstanding Balances</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('move_type', '=', 'out_invoice'), ('state', '=', 'posted'), ('payment_state', 'not in', ['paid', 'in_payment']), ('pet_id', '!=', False)]</field>
+        <field name="view_id" ref="view_account_move_outstanding_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Great! All invoice balances are fully paid.
+            </p>
+        </field>
+    </record>
+
+    <!-- Sidebar Menus -->
+    <menuitem id="menu_clinicflow_billing" name="Billing" parent="clinicflow_core.menu_clinicflow_root" action="account.action_move_out_invoice_type" sequence="25"/>
+
+    <!-- Reports Submenu injection -->
+    <menuitem id="menu_clinicflow_reports_outstanding_balances" name="Outstanding Balances" parent="clinicflow_clinical.menu_clinicflow_reports_root" action="action_clinicflow_outstanding_balances" sequence="20"/>
+</odoo>

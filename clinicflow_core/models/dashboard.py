@@ -1,5 +1,4 @@
 from odoo import models, fields, api
-import datetime
 
 class ClinicFlowDashboard(models.TransientModel):
     _name = 'clinicflow.dashboard'
@@ -20,85 +19,20 @@ class ClinicFlowDashboard(models.TransientModel):
     mgmt_outstanding_invoices = fields.Float(string="Outstanding Invoices Balance", compute="_compute_metrics")
 
     def _compute_metrics(self):
-        today_start = datetime.datetime.combine(fields.Date.today(), datetime.time.min)
-        today_end = datetime.datetime.combine(fields.Date.today(), datetime.time.max)
-
-        # 1. Appointments starting today
-        appointments = self.env['calendar.event'].search([
-            ('start', '>=', today_start),
-            ('start', '<=', today_end)
-        ])
-        no_shows = self.env['calendar.event'].search([
-            ('appointment_status', '=', 'no_show'),
-            ('start', '>=', today_start),
-            ('start', '<=', today_end)
-        ])
-        
-        # 2. Visits statuses
-        waiting_visits = self.env['clinicflow.visit'].search([
-            ('status', '=', 'waiting'), 
-            ('date', '>=', today_start), 
-            ('date', '<=', today_end)
-        ])
-        checked_in_visits = self.env['clinicflow.visit'].search([
-            ('status', '=', 'check_in'), 
-            ('date', '>=', today_start), 
-            ('date', '<=', today_end)
-        ])
-        billing_visits = self.env['clinicflow.visit'].search([
-            ('status', '=', 'billing')
-        ])
-
-        # 3. Vet metrics
-        consultations = self.env['clinicflow.visit'].search([
-            ('status', '=', 'consultation')
-        ])
-        admissions = self.env['clinicflow.admission'].search([
-            ('state', '=', 'admitted')
-        ])
-        
-        active_patient_visits = self.env['clinicflow.visit'].search([
-            ('status', 'in', ['consultation', 'treatment']),
-            ('date', '>=', today_start),
-            ('date', '<=', today_end)
-        ])
-        today_patients_count = len(active_patient_visits.mapped('pet_id'))
-
-        # 4. Mgmt metrics
-        completed_visits_today = self.env['clinicflow.visit'].search([
-            ('status', '=', 'completed'),
-            ('date', '>=', today_start),
-            ('date', '<=', today_end)
-        ])
-        
-        invoices_today = self.env['account.move'].search([
-            ('move_type', '=', 'out_invoice'),
-            ('state', '=', 'posted'),
-            ('invoice_date', '=', fields.Date.today())
-        ])
-        revenue_today = sum(invoices_today.mapped('amount_total'))
-
-        outstanding_invoices = self.env['account.move'].search([
-            ('move_type', '=', 'out_invoice'),
-            ('state', '=', 'posted'),
-            ('payment_state', 'not in', ['paid', 'in_payment'])
-        ])
-        outstanding_sum = sum(outstanding_invoices.mapped('amount_residual'))
-
         for rec in self:
-            rec.reception_today_appointments = len(appointments)
-            rec.reception_waiting = len(waiting_visits)
-            rec.reception_checked_in = len(checked_in_visits)
-            rec.reception_billing_pending = len(billing_visits)
-            rec.reception_no_shows = len(no_shows)
+            rec.reception_today_appointments = 0
+            rec.reception_waiting = 0
+            rec.reception_checked_in = 0
+            rec.reception_billing_pending = 0
+            rec.reception_no_shows = 0
 
-            rec.vet_today_patients = today_patients_count
-            rec.vet_open_consultations = len(consultations)
-            rec.vet_hospitalized = len(admissions)
+            rec.vet_today_patients = 0
+            rec.vet_open_consultations = 0
+            rec.vet_hospitalized = 0
 
-            rec.mgmt_revenue_today = revenue_today
-            rec.mgmt_patients_seen = len(completed_visits_today)
-            rec.mgmt_outstanding_invoices = outstanding_sum
+            rec.mgmt_revenue_today = 0.0
+            rec.mgmt_patients_seen = 0
+            rec.mgmt_outstanding_invoices = 0.0
 
     @api.model
     def action_open_dashboard(self):

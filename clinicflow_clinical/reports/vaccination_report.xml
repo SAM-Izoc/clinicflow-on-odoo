@@ -5,8 +5,8 @@
         <field name="name">Vaccinations Due Summary</field>
         <field name="model">clinicflow.vaccination</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">clinicflow_core.report_vaccinations_due_template</field>
-        <field name="report_file">clinicflow_core.report_vaccinations_due_template</field>
+        <field name="report_name">clinicflow_clinical.report_vaccinations_due_template</field>
+        <field name="report_file">clinicflow_clinical.report_vaccinations_due_template</field>
         <field name="binding_model_id" ref="model_clinicflow_vaccination"/>
         <field name="binding_type">report</field>
     </record>

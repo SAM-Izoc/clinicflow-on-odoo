@@ -39,4 +39,3 @@ class ClinicFlowVaccination(models.Model):
                 'res_id': rec.id
             })
         return records
-

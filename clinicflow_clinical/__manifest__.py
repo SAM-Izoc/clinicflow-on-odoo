@@ -1,0 +1,25 @@
+{
+    'name': 'ClinicFlow Vet Clinical',
+    'version': '1.0',
+    'category': 'Services/Veterinary',
+    'summary': 'Clinical consultations, visits, SOAP notes, prescriptions, vaccinations, admissions, and appointments scheduling.',
+    'depends': [
+        'clinicflow_patient',
+        'calendar',
+        'account',
+    ],
+    'data': [
+        'security/ir.model.access.csv',
+        'views/visit_views.xml',
+        'views/admission_views.xml',
+        'views/calendar_views.xml',
+        'views/pet_views.xml',
+        'views/report_menus.xml',
+        'reports/daily_activity_report.xml',
+        'reports/vaccination_report.xml',
+    ],
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'AGPL-3',
+}

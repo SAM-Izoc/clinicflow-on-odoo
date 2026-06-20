@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action for Vaccinations Due -->
+    <record id="action_clinicflow_vaccinations_due" model="ir.actions.act_window">
+        <field name="name">Vaccinations Due</field>
+        <field name="res_model">clinicflow.vaccination</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="domain">[('status', 'in', ['scheduled', 'overdue'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No vaccinations due or overdue!
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for Daily Activity (completed visits today) -->
+    <record id="action_clinicflow_daily_activity" model="ir.actions.act_window">
+        <field name="name">Daily Visits &amp; Activity</field>
+        <field name="res_model">clinicflow.visit</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="domain">[('date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No clinical visits logged today yet.
+            </p>
+        </field>
+    </record>
+
+    <!-- Global Operations & Clinical Actions for Menus -->
+    <record id="action_clinicflow_visit_global" model="ir.actions.act_window">
+        <field name="name">Global Visits</field>
+        <field name="res_model">clinicflow.visit</field>
+        <field name="view_mode">list,form,calendar</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Log or manage clinic visits.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_clinicflow_vaccination_global" model="ir.actions.act_window">
+        <field name="name">Global Vaccinations</field>
+        <field name="res_model">clinicflow.vaccination</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Record vaccine administrations.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_clinicflow_prescription_global" model="ir.actions.act_window">
+        <field name="name">Global Prescriptions</field>
+        <field name="res_model">clinicflow.prescription</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Write clinical prescriptions.
+            </p>
+        </field>
+    </record>
+
+    <!-- Sidebar Menus -->
+    <menuitem id="menu_clinicflow_appointments" name="Appointments" parent="clinicflow_core.menu_clinicflow_root" action="calendar.action_calendar_event" sequence="15"/>
+    <menuitem id="menu_clinicflow_admissions" name="Hospitalizations" parent="clinicflow_core.menu_clinicflow_root" action="action_clinicflow_admission" sequence="20"/>
+
+    <!-- Operations Submenu -->
+    <menuitem id="menu_clinicflow_operations_root" name="Operations" parent="clinicflow_core.menu_clinicflow_root" sequence="100"/>
+    <menuitem id="menu_clinicflow_visits_global" name="Visits" parent="menu_clinicflow_operations_root" action="action_clinicflow_visit_global" sequence="10"/>
+    <menuitem id="menu_clinicflow_vaccinations_global" name="Vaccinations" parent="menu_clinicflow_operations_root" action="action_clinicflow_vaccination_global" sequence="20"/>
+    <menuitem id="menu_clinicflow_prescriptions_global" name="Prescriptions" parent="menu_clinicflow_operations_root" action="action_clinicflow_prescription_global" sequence="30"/>
+
+    <!-- Reports Submenu -->
+    <menuitem id="menu_clinicflow_reports_root" name="Reports" parent="clinicflow_core.menu_clinicflow_root" sequence="40"/>
+    <menuitem id="menu_clinicflow_reports_vaccinations_due" name="Vaccinations Due" parent="menu_clinicflow_reports_root" action="action_clinicflow_vaccinations_due" sequence="10"/>
+    <menuitem id="menu_clinicflow_reports_daily_activity" name="Daily Activity Summary" parent="menu_clinicflow_reports_root" action="action_clinicflow_daily_activity" sequence="30"/>
+</odoo>

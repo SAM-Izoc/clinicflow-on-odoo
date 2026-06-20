@@ -3,7 +3,7 @@
     <record id="view_clinicflow_visit_form_ai" model="ir.ui.view">
         <field name="name">clinicflow.visit.form.ai</field>
         <field name="model">clinicflow.visit</field>
-        <field name="inherit_id" ref="clinicflow_core.view_clinicflow_visit_form"/>
+        <field name="inherit_id" ref="clinicflow_clinical.view_clinicflow_visit_form"/>
         <field name="arch" type="xml">
             <!-- Add AI button in header -->
             <xpath expr="//header" position="inside">

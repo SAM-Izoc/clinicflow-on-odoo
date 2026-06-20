@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Tree View -->
+    <record id="view_clinicflow_pet_tree_clinical" model="ir.ui.view">
+        <field name="name">clinicflow.pet.list.clinical</field>
+        <field name="model">clinicflow.pet</field>
+        <field name="inherit_id" ref="clinicflow_patient.view_clinicflow_pet_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='owner_id']" position="after">
+                <field name="last_visit_date"/>
+                <field name="upcoming_appointment_date"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Search View -->
+    <record id="view_clinicflow_pet_search_clinical" model="ir.ui.view">
+        <field name="name">clinicflow.pet.search.clinical</field>
+        <field name="model">clinicflow.pet</field>
+        <field name="inherit_id" ref="clinicflow_patient.view_clinicflow_pet_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='cats']" position="after">
+                <separator/>
+                <filter string="Has Upcoming Appointment" name="has_appointment" domain="[('upcoming_appointment_date', '!=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Form View (Inject Clinical notebook tabs and header buttons) -->
+    <record id="view_clinicflow_pet_form_clinical" model="ir.ui.view">
+        <field name="name">clinicflow.pet.form.clinical</field>
+        <field name="model">clinicflow.pet</field>
+        <field name="inherit_id" ref="clinicflow_patient.view_clinicflow_pet_form"/>
+        <field name="arch" type="xml">
+            <!-- Add header buttons -->
+            <xpath expr="//header" position="inside">
+                <button name="action_create_appointment_quick" string="+ New Appointment" type="object" class="btn btn-secondary"/>
+                <button name="action_create_visit_quick" string="+ New Visit" type="object" class="btn btn-secondary"/>
+                <button name="action_create_prescription_quick" string="+ New Prescription" type="object" class="btn btn-secondary"/>
+                <button name="action_create_vaccination_quick" string="+ New Vaccination" type="object" class="btn btn-secondary"/>
+                <button name="action_create_admission_quick" string="+ Admit Patient" type="object" class="btn btn-secondary"/>
+            </xpath>
+
+            <!-- Inject tabs inside notebook -->
+            <xpath expr="//notebook" position="inside">
+                <!-- Visits Tab -->
+                <page string="Visits" name="visits">
+                    <field name="visit_ids" readonly="1">
+                        <list string="Visits">
+                            <field name="name"/>
+                            <field name="date"/>
+                            <field name="vet_id"/>
+                            <field name="status" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+
+                <!-- Vaccinations Tab -->
+                <page string="Vaccinations" name="vaccinations">
+                    <field name="vaccination_ids" readonly="1">
+                        <list string="Vaccinations">
+                            <field name="vaccine_product_id"/>
+                            <field name="date_administered"/>
+                            <field name="date_due"/>
+                            <field name="status" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+
+                <!-- Prescriptions Tab -->
+                <page string="Prescriptions" name="prescriptions">
+                    <field name="prescription_ids" readonly="1">
+                        <list string="Prescriptions">
+                            <field name="name"/>
+                            <field name="date"/>
+                            <field name="notes"/>
+                        </list>
+                    </field>
+                </page>
+
+                <!-- Hospitalizations Tab -->
+                <page string="Hospitalizations" name="hospitalizations">
+                    <field name="admission_ids" readonly="1">
+                        <list string="Hospitalizations">
+                            <field name="name"/>
+                            <field name="admission_date"/>
+                            <field name="discharge_date"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+
+                <!-- Timeline Tab -->
+                <page string="Timeline" name="timeline">
+                    <field name="timeline_ids" readonly="1">
+                        <kanban class="o_kanban_mobile" create="false" delete="false">
+                            <field name="event_type"/>
+                            <field name="event_date"/>
+                            <field name="name"/>
+                            <field name="user_id"/>
+                            <templates>
+                                <t t-name="card">
+                                    <div class="d-flex align-items-center p-2 mb-2 border rounded shadow-sm bg-white" style="border-left: 5px solid #007bff !important;">
+                                        <!-- Left Col: Icon based on type -->
+                                        <div class="me-3 text-center" style="width: 40px;">
+                                            <t t-if="record.event_type.raw_value == 'visit'">
+                                                <span class="fa fa-stethoscope text-primary fa-lg" title="Visit"/>
+                                            </t>
+                                            <t t-elif="record.event_type.raw_value == 'vaccination'">
+                                                <span class="fa fa-shield text-success fa-lg" title="Vaccination"/>
+                                            </t>
+                                            <t t-elif="record.event_type.raw_value == 'prescription'">
+                                                <span class="fa fa-medkit text-warning fa-lg" title="Prescription"/>
+                                            </t>
+                                            <t t-elif="record.event_type.raw_value == 'invoice'">
+                                                <span class="fa fa-credit-card text-info fa-lg" title="Invoice"/>
+                                            </t>
+                                            <t t-elif="record.event_type.raw_value == 'admission'">
+                                                <span class="fa fa-hospital-o text-danger fa-lg" title="Admission"/>
+                                            </t>
+                                        </div>
+                                        
+                                        <!-- Right Col: Event content -->
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between">
+                                                <strong class="text-dark"><field name="name"/></strong>
+                                                <span class="text-muted small"><field name="event_date"/></span>
+                                            </div>
+                                            <div class="text-muted small mt-1">
+                                                <span class="fa fa-user me-1"/>Logged by: <field name="user_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

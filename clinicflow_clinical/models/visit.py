@@ -60,7 +60,6 @@ class ClinicFlowVisit(models.Model):
         invoice_vals = {
             'move_type': 'out_invoice',
             'partner_id': self.owner_id.id,
-            'pet_id': self.pet_id.id,
             'invoice_date': fields.Date.today(),
             'invoice_line_ids': [],
         }
@@ -110,4 +109,3 @@ class ClinicFlowVisitChargeLine(models.Model):
     )
     quantity = fields.Float(string="Quantity", default=1.0, required=True)
     price_unit = fields.Float(string="Unit Price", related='product_id.list_price', readonly=False, store=True)
-

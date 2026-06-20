@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_clinicflow_visit,clinicflow.visit,model_clinicflow_visit,base.group_user,1,1,1,1
+access_clinicflow_vaccination,clinicflow.vaccination,model_clinicflow_vaccination,base.group_user,1,1,1,1
+access_clinicflow_prescription,clinicflow.prescription,model_clinicflow_prescription,base.group_user,1,1,1,1
+access_clinicflow_prescription_line,clinicflow.prescription.line,model_clinicflow_prescription_line,base.group_user,1,1,1,1
+access_clinicflow_visit_charge_line,clinicflow.visit.charge.line,model_clinicflow_visit_charge_line,base.group_user,1,1,1,1
+access_clinicflow_admission,clinicflow.admission,model_clinicflow_admission,base.group_user,1,1,1,1
+access_clinicflow_timeline_event,clinicflow.timeline.event,model_clinicflow_timeline_event,base.group_user,1,1,1,1
