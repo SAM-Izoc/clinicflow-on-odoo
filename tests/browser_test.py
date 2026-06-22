@@ -27,8 +27,8 @@ async def run_browser_tests():
         try:
             # 1. Navigate to Login Page
             print("\n[Step 1] Navigating to Odoo login page...")
-            await page.goto(f"{BASE_URL}/web/login")
-            await page.wait_for_selector("input#login")
+            await page.goto(f"{BASE_URL}/web/login?db={DB_NAME}")
+            await page.wait_for_selector("input#login", state="visible")
 
             # 2. Perform Login
             print("[Step 2] Logging in as admin...")
@@ -44,13 +44,13 @@ async def run_browser_tests():
             # 3. Locate ClinicFlow App in App Switcher/Navbar
             print("\n[Step 3] Navigating to ClinicFlow Module...")
             # Click the main app switcher menu if present
-            app_switcher = page.locator(".o_menu_apps")
+            app_switcher = page.locator(".o_navbar_apps_menu")
             if await app_switcher.count() > 0:
                 await app_switcher.click()
+                await page.wait_for_timeout(1000)
             
             # Click ClinicFlow menu item
-            # Look for elements containing text 'ClinicFlow'
-            clinicflow_app = page.locator("a:has-text('ClinicFlow'), .o_app:has-text('ClinicFlow')")
+            clinicflow_app = page.locator("a.o_app:has-text('ClinicFlow'), .o_app:has-text('ClinicFlow'), a:has-text('ClinicFlow')")
             if await clinicflow_app.count() > 0:
                 await clinicflow_app.first.click()
             else:
@@ -58,7 +58,7 @@ async def run_browser_tests():
                 print("ClinicFlow app menu not clickable, using direct URL hash...")
                 await page.goto(f"{BASE_URL}/web#menu_id=clinicflow_core.menu_clinicflow_root")
             
-            await page.wait_for_load_state("networkidle")
+            await page.wait_for_load_state("domcontentloaded")
             await page.wait_for_timeout(2000)  # Give OWL framework a moment to render the sidebar
 
             # 4. Verify Sidebar Menu Order
@@ -87,16 +87,16 @@ async def run_browser_tests():
                 first_item = menu_items[0]
                 print(f"First menu item is: '{first_item}'")
                 if "Dashboard" in first_item or "ClinicFlow" in first_item:
-                    print("✅ SUCCESS: Dashboards (or ClinicFlow base dashboard) is positioned first.")
+                    print("[SUCCESS]: Dashboards (or ClinicFlow base dashboard) is positioned first.")
                 else:
-                    print(f"⚠️ WARNING: Expected first menu item to be Dashboards, got '{first_item}'")
+                    print(f"[WARNING]: Expected first menu item to be Dashboards, got '{first_item}'")
             else:
                 print("Could not retrieve sidebar menu items, verifying via direct URL routing...")
 
             # 5. Direct navigation to Patients view
             print("\n[Step 5] Accessing Patients View...")
             # We can use Odoo URL hash to navigate directly to the Pet list action
-            await page.goto(f"{BASE_URL}/web#model=clinicflow.pet&view_type=list")
+            await page.goto(f"{BASE_URL}/web#action=clinicflow_patient.action_clinicflow_pet")
             await page.wait_for_selector(".o_list_renderer", timeout=15000)
             print("Patients list view loaded successfully.")
 
@@ -109,13 +109,13 @@ async def run_browser_tests():
 
             # Verify that seeded pets (Max and Bella) exist
             if "Max" in pet_names:
-                print("✅ Seeding verified: Found pet 'Max' in list.")
+                print("[SUCCESS]: Seeding verified: Found pet 'Max' in list.")
             else:
-                print("⚠️ Seeding warning: Pet 'Max' not found in visible list.")
+                print("[WARNING]: Seeding warning: Pet 'Max' not found in visible list.")
 
             # 6. Direct navigation to Visits view to verify visit and billing linkage
             print("\n[Step 6] Accessing Visits View...")
-            await page.goto(f"{BASE_URL}/web#model=clinicflow.visit&view_type=list")
+            await page.goto(f"{BASE_URL}/web#action=clinicflow_clinical.action_clinicflow_visit_global")
             await page.wait_for_selector(".o_list_renderer", timeout=15000)
             print("Visits list view loaded successfully.")
 
@@ -137,18 +137,15 @@ async def run_browser_tests():
             print(f"Saved dashboard verification screenshot to: {screenshot_path}")
             
             print("\n==================================================")
-            print("🎉 Browser Verification Tests Completed Successfully!")
+            print("[COMPLETED]: Browser Verification Tests Completed Successfully!")
             print("==================================================")
 
         except Exception as e:
-            print(f"\n❌ ERROR occurred during E2E verification: {e}", file=sys.stderr)
+            print(f"\n[ERROR] occurred during E2E verification: {e}", file=sys.stderr)
             import traceback
             traceback.print_exc()
         finally:
             await browser.close()
 
 if __name__ == "__main__":
-    if sys.platform == "win32":
-        # Solve asyncio issue on Windows
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     asyncio.run(run_browser_tests())
