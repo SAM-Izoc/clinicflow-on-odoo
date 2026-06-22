@@ -1,0 +1,13 @@
+.git
+.gitignore
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+docker-compose.yml
+tests/
+README.md
+docs/
+walkthrough.md
+implementation_plan.md
+task.md

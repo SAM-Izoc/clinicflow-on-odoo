@@ -22,7 +22,10 @@ services:
   # Odoo Init & Migration (runs once before main Odoo service)
   # ----------------------------------------------------------
   odoo_init:
-    image: odoo:19.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: clinicflow-odoo-prod:latest
     container_name: odoo_clinicflow_init
     restart: "no"
     entrypoint: ["python3", "-c"]
@@ -168,8 +171,6 @@ services:
     volumes:
       # Odoo filestore (attachments, sessions)
       - odoo-prod-data:/var/lib/odoo
-      # Custom ClinicFlow addons (git-cloned repo root)
-      - .:/mnt/extra-addons:ro
     environment:
       - ODOO_DB_HOST=postgres_clinicflow
       - ODOO_DB_PORT=5432
@@ -190,7 +191,10 @@ services:
   # Odoo 19.0 CE (multi-arch — works on ARM64 + AMD64)
   # ----------------------------------------------------------
   odoo:
-    image: odoo:19.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: clinicflow-odoo-prod:latest
     container_name: odoo_clinicflow_prod
     restart: always
     depends_on:
@@ -201,8 +205,6 @@ services:
     volumes:
       # Odoo filestore (attachments, sessions)
       - odoo-prod-data:/var/lib/odoo
-      # Custom ClinicFlow addons (git-cloned repo root)
-      - .:/mnt/extra-addons:ro
     environment:
       - ODOO_DB_HOST=postgres_clinicflow
       - ODOO_DB_PORT=5432
