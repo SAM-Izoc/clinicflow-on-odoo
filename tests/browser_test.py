@@ -135,6 +135,33 @@ async def run_browser_tests():
             screenshot_path = os.path.join(os.path.dirname(__file__), "clinicflow_dashboard_verification.png")
             await page.screenshot(path=screenshot_path)
             print(f"Saved dashboard verification screenshot to: {screenshot_path}")
+
+            # 8. Access Owner 360 View
+            print("\n[Step 8] Verifying Owner 360 Contact View...")
+            await page.goto(f"{BASE_URL}/web#model=res.partner&view_type=list")
+            await page.wait_for_selector(".o_list_renderer", timeout=15000)
+            
+            owner_row = page.locator(".o_list_table td[name='display_name']:has-text('John Doe'), .o_list_table td[name='name']:has-text('John Doe')")
+            if await owner_row.count() > 0:
+                await owner_row.first.click()
+                await page.wait_for_selector(".o_form_sheet", timeout=15000)
+                await page.wait_for_timeout(2000)
+                
+                # Check for smart buttons
+                buttons = page.locator(".oe_stat_button")
+                btn_texts = []
+                for i in range(await buttons.count()):
+                    text = await buttons.nth(i).text_content()
+                    if text:
+                        btn_texts.append(text.strip().replace('\n', ' '))
+                print(f"Owner Smart Buttons detected: {btn_texts}")
+                
+                # Take a screenshot of the Owner Form to verify UI visually
+                owner_screenshot_path = os.path.join(os.path.dirname(__file__), "clinicflow_owner_verification.png")
+                await page.screenshot(path=owner_screenshot_path)
+                print(f"Saved Owner 360 verification screenshot to: {owner_screenshot_path}")
+            else:
+                print("Owner 'John Doe' row not found in contact list.")
             
             print("\n==================================================")
             print("[COMPLETED]: Browser Verification Tests Completed Successfully!")

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_clinicflow_billing" model="ir.ui.view">
+        <field name="name">res.partner.form.clinicflow.billing</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="clinicflow_patient.view_partner_form_clinicflow"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_outstanding_invoices" type="object" class="oe_stat_button" icon="fa-money" invisible="not is_pet_owner">
+                    <field name="total_outstanding_balance" widget="statinfo" string="Outstanding"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

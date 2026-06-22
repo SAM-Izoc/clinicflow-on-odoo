@@ -14,6 +14,7 @@
         'views/admission_views.xml',
         'views/calendar_views.xml',
         'views/pet_views.xml',
+        'views/partner_views.xml',
         'views/report_menus.xml',
         'reports/daily_activity_report.xml',
         'reports/vaccination_report.xml',

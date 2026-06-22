@@ -9,6 +9,7 @@
     ],
     'data': [
         'views/pet_views.xml',
+        'views/partner_views.xml',
         'views/report_menus.xml',
     ],
     'installable': True,

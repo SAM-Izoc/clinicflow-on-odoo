@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_clinicflow_clinical" model="ir.ui.view">
+        <field name="name">res.partner.form.clinicflow.clinical</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="clinicflow_patient.view_partner_form_clinicflow"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='pets_and_patients']" position="after">
+                <page string="Clinical Timeline" name="clinical_timeline" invisible="not is_pet_owner">
+                    <group string="Visits &amp; Consultations">
+                        <field name="visit_ids" nolabel="1" readonly="1">
+                            <list string="Visits">
+                                <field name="name"/>
+                                <field name="date"/>
+                                <field name="pet_id"/>
+                                <field name="vet_id"/>
+                                <field name="status" widget="badge" decoration-info="status == 'consultation'" decoration-success="status == 'completed'"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Appointments">
+                        <field name="appointment_ids" nolabel="1" readonly="1">
+                            <list string="Appointments">
+                                <field name="name"/>
+                                <field name="start"/>
+                                <field name="stop"/>
+                                <field name="pet_id"/>
+                                <field name="appointment_status" widget="badge" decoration-success="appointment_status == 'checked_in'"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

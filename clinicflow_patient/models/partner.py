@@ -1,10 +1,27 @@
-from odoo import models, fields
+from odoo import models, fields, api
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     is_pet_owner = fields.Boolean(string="Is Pet Owner", default=False, help="Check if this contact is a pet owner.")
     pet_ids = fields.One2many('clinicflow.pet', 'owner_id', string="Pets")
+    pet_count = fields.Integer(string="Pet Count", compute="_compute_pet_stats")
+
+    @api.depends('pet_ids')
+    def _compute_pet_stats(self):
+        for rec in self:
+            rec.pet_count = len(rec.pet_ids)
+
+    def action_view_pets(self):
+        self.ensure_one()
+        return {
+            'name': f"Pets - {self.name}",
+            'type': 'ir.actions.act_window',
+            'res_model': 'clinicflow.pet',
+            'view_mode': 'list,form',
+            'domain': [('owner_id', '=', self.id)],
+            'context': {'default_owner_id': self.id},
+        }
 
 
 class ResUsers(models.Model):

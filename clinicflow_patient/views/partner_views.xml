@@ -5,6 +5,11 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_pets" type="object" class="oe_stat_button" icon="fa-paw" invisible="not is_pet_owner">
+                    <field name="pet_count" widget="statinfo" string="Pets"/>
+                </button>
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="Pets &amp; Patients" name="pets_and_patients">
                     <group>
