@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Template Tree View -->
+    <record id="view_clinicflow_outreach_template_tree" model="ir.ui.view">
+        <field name="name">clinicflow.outreach.template.tree</field>
+        <field name="model">clinicflow.outreach.template</field>
+        <field name="arch" type="xml">
+            <list string="Outreach Templates">
+                <field name="name"/>
+                <field name="channel" widget="badge"/>
+                <field name="subject"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Template Form View -->
+    <record id="view_clinicflow_outreach_template_form" model="ir.ui.view">
+        <field name="name">clinicflow.outreach.template.form</field>
+        <field name="model">clinicflow.outreach.template</field>
+        <field name="arch" type="xml">
+            <form string="Outreach Template">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="channel"/>
+                        </group>
+                        <group>
+                            <field name="subject" invisible="channel != 'email'" required="channel == 'email'"/>
+                        </group>
+                    </group>
+                    <group string="Template Content">
+                        <field name="body" placeholder="Use {{owner_name}}, {{pet_name}}, {{vaccine_name}}, {{due_date}} as placeholders." colspan="2"/>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Placeholder Guidelines:</strong>
+                        <ul>
+                            <li><code>{{owner_name}}</code>: The contact name of the pet owner.</li>
+                            <li><code>{{pet_name}}</code>: The name of the pet patient.</li>
+                            <li><code>{{vaccine_name}}</code>: The name of the vaccine product.</li>
+                            <li><code>{{due_date}}</code>: The date the vaccination is scheduled or overdue.</li>
+                        </ul>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Template Action -->
+    <record id="action_clinicflow_outreach_template" model="ir.actions.act_window">
+        <field name="name">Outreach Templates</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">clinicflow.outreach.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu Items under Root -->
+    <menuitem id="menu_clinicflow_outreach_root"
+              name="Outreach &amp; Reminders"
+              parent="clinicflow_core.menu_clinicflow_root"
+              sequence="35"/>
+
+    <menuitem id="menu_clinicflow_outreach_template"
+              name="Outreach Templates"
+              parent="menu_clinicflow_outreach_root"
+              action="action_clinicflow_outreach_template"
+              sequence="10"/>
+</odoo>

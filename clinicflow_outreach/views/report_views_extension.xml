@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Custom Tree View for Vaccination with "Send Reminder" Button -->
+    <record id="view_clinicflow_vaccination_tree_inherit_outreach" model="ir.ui.view">
+        <field name="name">clinicflow.vaccination.tree.outreach</field>
+        <field name="model">clinicflow.vaccination</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <list string="Vaccinations">
+                <field name="pet_id"/>
+                <field name="vaccine_product_id"/>
+                <field name="date_administered"/>
+                <field name="date_due"/>
+                <field name="status" widget="badge" decoration-warning="status == 'scheduled'" decoration-danger="status == 'overdue'" decoration-success="status == 'administered'"/>
+                <!-- Inline button to trigger manual reminder -->
+                <button name="action_send_reminder" string="Send Reminder" type="object" icon="fa-paper-plane" class="btn-primary" invisible="status not in ['scheduled', 'overdue']"/>
+            </list>
+        </field>
+    </record>
+</odoo>

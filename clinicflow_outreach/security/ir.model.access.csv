@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_clinicflow_outreach_template,clinicflow.outreach.template,model_clinicflow_outreach_template,base.group_user,1,1,1,1
+access_clinicflow_outreach_log,clinicflow.outreach.log,model_clinicflow_outreach_log,base.group_user,1,1,1,1

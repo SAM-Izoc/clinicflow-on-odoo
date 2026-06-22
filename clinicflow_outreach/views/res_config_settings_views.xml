@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_clinicflow" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.clinicflow.outreach</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="90"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ClinicFlow Outreach" name="clinicflow_outreach">
+                    <block title="Vaccination &amp; Outreach Settings" name="outreach_settings">
+                        <setting title="Reminders Configuration" help="Set default priority and throttling rules for outreach campaigns.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="outreach_channel_priority" class="col-lg-4 o_light_label"/>
+                                    <field name="outreach_channel_priority" class="oe_inline"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="outreach_throttle_days" class="col-lg-4 o_light_label"/>
+                                    <field name="outreach_throttle_days" class="oe_inline"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Settings Action -->
+    <record id="action_clinicflow_outreach_config" model="ir.actions.act_window">
+        <field name="name">Outreach Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'module': 'clinicflow_outreach'}</field>
+    </record>
+
+    <menuitem id="menu_clinicflow_outreach_config"
+              name="Outreach Settings"
+              parent="clinicflow_clinical.menu_clinicflow_reports_root"
+              action="action_clinicflow_outreach_config"
+              sequence="100"/>
+</odoo>
