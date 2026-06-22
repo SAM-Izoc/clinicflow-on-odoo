@@ -95,6 +95,41 @@ Whenever you push new changes to GitHub, you do not need to SSH into the VPS. Yo
 
 ---
 
+## Backup
+
+Since Portainer automatically pulls and clones the stack's files locally on the host under `/data/compose/<stack_id>/`, you can schedule these backups on the VPS host:
+
+```bash
+# Daily DB backup at 2am
+0 2 * * * docker exec postgres_clinicflow pg_dump -U odoo clinicflow \
+  | gzip > /opt/backups/clinicflow_$(date +\%Y\%m\%d).sql.gz
+
+# Keep last 14 days
+0 3 * * * find /opt/backups -name "*.sql.gz" -mtime +14 -delete
+```
+
+```bash
+# Filestore backup
+0 4 * * * docker run --rm \
+  -v odoo-clinicflow-prod-data:/data \
+  -v /opt/backups:/backup \
+  busybox tar czf /backup/filestore_$(date +\%Y\%m\%d).tar.gz /data
+```
+
+---
+
+## Firewall (Oracle Security List)
+
+Only **SSH (22)** needs to be open inbound. Cloudflare Tunnel establishes an **outbound** connection — no inbound ports needed for Odoo.
+
+```bash
+# Verify nothing else is exposed
+sudo ufw status
+# Should show only 22/tcp open
+```
+
+---
+
 ## Troubleshooting
 
 | Problem | Fix |
