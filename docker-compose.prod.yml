@@ -11,8 +11,9 @@
 #   5. Fill in the environment variables:
 #      - DB_PASSWORD (strong password for postgres)
 #      - MASTER_PASSWORD (admin master password for database manager)
-#      - CF_TUNNEL_TOKEN (Cloudflare Tunnel token)
 #   6. Deploy the stack.
+#   7. In Cloudflare Zero Trust (Tunnels), add a Public Hostname
+#      routing demoerp.clinicflow.vet to http://odoo_clinicflow_prod:8069.
 # ============================================================
 
 services:
@@ -118,29 +119,6 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # ----------------------------------------------------------
-  # Cloudflare Tunnel
-  # Get your token from:
-  #   Cloudflare Zero Trust → Networks → Tunnels
-  #   → your tunnel → Configure → Docker
-  # ----------------------------------------------------------
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflared_clinicflow
-    restart: always
-    command: tunnel --no-autoupdate run
-    environment:
-      - TUNNEL_TOKEN=${CF_TUNNEL_TOKEN}
-    depends_on:
-      - odoo
-    networks:
-      - clinicflow-net
-    logging:
-      driver: json-file
-      options:
-        max-size: "5m"
-        max-file: "3"
-
 # ----------------------------------------------------------
 # Volumes
 # ----------------------------------------------------------
@@ -151,9 +129,9 @@ volumes:
     name: postgres-clinicflow-prod-data
 
 # ----------------------------------------------------------
-# Network (internal — no host port exposure needed)
+# Network (reused from the clinicflow-sam stack)
 # ----------------------------------------------------------
 networks:
   clinicflow-net:
-    driver: bridge
-    name: clinicflow-prod-net
+    external: true
+    name: clinicflow-sam_clinic-network

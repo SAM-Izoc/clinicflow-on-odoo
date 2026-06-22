@@ -1,10 +1,10 @@
-# ClinicFlow — VPS Deployment Guide (Zero-SSH via Portainer)
+# ClinicFlow — VPS Deployment Guide (Shared Cloudflare Tunnel & Network)
 
 **Target**: Oracle A1Flex (ARM64) · Docker · Portainer · Cloudflare Tunnel  
 **Domain**: `demoerp.clinicflow.vet`  
 **Odoo**: 19.0 CE · PostgreSQL 15
 
-This deployment guide uses **Portainer Stacks** with Git integration to achieve a **zero-SSH / zero-terminal** deployment process. The database initialization, module installation, seed data loading, and subsequent upgrades are fully automated.
+This deployment guide uses **Portainer Stacks** with Git integration to achieve a **zero-SSH / zero-terminal** deployment process. It is configured to reuse the existing Cloudflare Tunnel and network (`clinicflow-sam_clinic-network`) from your existing `clinicflow-sam` stack, saving VPS resources and consolidating entry points.
 
 ---
 
@@ -14,8 +14,8 @@ This deployment guide uses **Portainer Stacks** with Git integration to achieve 
 |---|---|
 | Oracle A1Flex VPS | Ubuntu 22.04 recommended (with Portainer CE running) |
 | Portainer CE | Running and accessible on the VPS |
-| Cloudflare Tunnel | A tunnel created in Cloudflare Zero Trust dashboard |
-| DNS | `demoerp.clinicflow.vet` CNAME → your CF tunnel target (auto-created by Cloudflare) |
+| Existing Stack | The `clinicflow-sam` stack must be running on the VPS, which provides the private network `clinicflow-sam_clinic-network` and the `clinic-flow-tunnel` Cloudflare Tunnel. |
+| DNS / Cloudflare | Control of `demoerp.clinicflow.vet` in the Cloudflare Dashboard |
 | Git Repo Access | Portainer needs to read this repository (can be made public during deployment or accessed using a GitHub Personal Access Token) |
 
 > **ARM64 Note**: `odoo:19.0` on Docker Hub publishes a multi-arch manifest including `linux/arm64`. No custom image compilation is needed.
@@ -24,15 +24,15 @@ This deployment guide uses **Portainer Stacks** with Git integration to achieve 
 
 ## Step 1 — Deploy the Stack in Portainer
 
-Portainer can clone the repository directly and build/start the containers using the production docker-compose file.
+Portainer will clone this repository directly and deploy Odoo and PostgreSQL as a new stack connected to the existing `clinicflow-sam_clinic-network` network.
 
 1. Log into your **Portainer Dashboard**.
 2. Navigate to **Stacks** → **Add stack**.
-3. Set the stack **Name** (e.g., `clinicflow`).
+3. Set the stack **Name** (e.g., `clinicflow-odoo`).
 4. Under **Build method**, select **Repository**.
 5. Fill in the **Repository details**:
    - **Repository URL**: `https://github.com/YOUR_ORG/clinicflow-on-odoo.git` (replace with your repository URL).
-   - **Repository reference**: `refs/heads/main` (or whichever branch you wish to deploy).
+   - **Repository reference**: `refs/heads/main`
    - **Compose path**: `docker-compose.prod.yml`
 6. **Authentication** (if the repository is private):
    - Toggle **Authentication** ON.
@@ -42,8 +42,8 @@ Portainer can clone the repository directly and build/start the containers using
    ```env
    DB_PASSWORD=YOUR_STRONG_DATABASE_PASSWORD
    MASTER_PASSWORD=YOUR_ODOO_ADMIN_MASTER_PASSWORD
-   CF_TUNNEL_TOKEN=YOUR_CLOUDFLARE_TUNNEL_TOKEN
    ```
+   *(Note: No Cloudflare Tunnel token is needed here because we are using your existing running tunnel container).*
 8. Click **Deploy the stack**.
 
 ---
@@ -59,14 +59,32 @@ Once you deploy the stack, the deployment and setup happen automatically:
    - Since it's a new database, it runs Odoo to install all custom modules: `clinicflow_core`, `clinicflow_patient`, `clinicflow_clinical`, `clinicflow_billing`, `clinicflow_ai`, `clinicflow_outreach`.
    - Runs [seed_data.py](file:///d:/MyApps/For%20SAM/clinicflow-on-odoo/seed_data.py) automatically inside the Odoo shell.
 3. Once initialization is finished, the `odoo_init` container exits successfully (`exit code 0`).
-4. The main **`odoo`** web server container starts up automatically (because it depends on `odoo_init` completing successfully).
-5. The **`cloudflared`** container starts and routes traffic to the Odoo service.
+4. The main **`odoo`** web server container starts up automatically (because it depends on `odoo_init` completing successfully) and connects to `clinicflow-sam_clinic-network`.
 
 > **Tip**: You can view the setup logs by clicking on the `odoo_clinicflow_init` container in Portainer and checking its logs.
 
 ---
 
-## Step 3 — Post-Deploy Configuration (Manual in Odoo UI)
+## Step 3 — Route Traffic via Existing Cloudflare Tunnel
+
+Because the new Odoo stack joins the same Docker network (`clinicflow-sam_clinic-network`) as your existing Cloudflare Tunnel container (`clinic-flow-tunnel`), you only need to add a routing rule in Cloudflare Zero Trust:
+
+1. Go to your **Cloudflare Zero Trust Dashboard** → **Networks** → **Tunnels**.
+2. Click on the running tunnel that corresponds to your `clinicflow-sam` stack (e.g., `ClinicFlow-Production`).
+3. Select **Configure** and go to the **Public Hostnames** tab.
+4. Click **Add a public hostname**.
+5. Fill in the details:
+   - **Subdomain**: `demoerp`
+   - **Domain**: `clinicflow.vet` (or your registered domain)
+   - **Type**: `HTTP`
+   - **URL**: `odoo_clinicflow_prod:8069`
+6. Click **Save hostname**.
+
+*Cloudflare Tunnel will now securely route all traffic destined for `https://demoerp.clinicflow.vet` directly to the `odoo_clinicflow_prod` container via the internal Docker network.*
+
+---
+
+## Step 4 — Post-Deploy Configuration (Manual in Odoo UI)
 
 After the containers are running, navigate to `https://demoerp.clinicflow.vet` in your browser:
 
@@ -81,11 +99,11 @@ After the containers are running, navigate to `https://demoerp.clinicflow.vet` i
 
 ---
 
-## Step 4 — Keeping the Code Updated (Redeploying)
+## Step 5 — Keeping the Code Updated (Redeploying)
 
-Whenever you push new changes to GitHub, you do not need to SSH into the VPS. You can pull the latest changes and upgrade modules directly from Portainer:
+Whenever you push new changes to GitHub, you can pull the latest changes and upgrade modules directly from Portainer:
 
-1. In Portainer, go to **Stacks** and select your `clinicflow` stack.
+1. In Portainer, go to **Stacks** and select your Odoo stack.
 2. Click **Editor**.
 3. Click the **Pull and redeploy** button.
 4. This instructs Portainer to:
@@ -118,24 +136,12 @@ Since Portainer automatically pulls and clones the stack's files locally on the 
 
 ---
 
-## Firewall (Oracle Security List)
-
-Only **SSH (22)** needs to be open inbound. Cloudflare Tunnel establishes an **outbound** connection — no inbound ports needed for Odoo.
-
-```bash
-# Verify nothing else is exposed
-sudo ufw status
-# Should show only 22/tcp open
-```
-
----
-
 ## Troubleshooting
 
 | Problem | Fix |
 |---|---|
 | Blank page / CSS broken after Cloudflare Tunnel | Ensure `proxy_mode = True` is passed via `ODOO_PROXY_MODE=True` in environment variables. |
-| 502 Bad Gateway | Check if `odoo_clinicflow_prod` is running. If not, check if `odoo_clinicflow_init` has finished with exit code 0. |
+| 502 Bad Gateway | Check if `odoo_clinicflow_prod` is running. If not, check if `odoo_clinicflow_init` has finished with exit code 0. Also verify that the tunnel hostname is routed to `odoo_clinicflow_prod:8069` exactly. |
 | Modules not showing up | Ensure `ODOO_ADDONS_PATH` includes `/mnt/extra-addons` and that the git repository has been cloned successfully by Portainer. |
 | DB connection timed out | Verify that the `DB_PASSWORD` matches between PostgreSQL and Odoo environment variables. |
 | Odoo session keeps expiring | Ensure you have correctly configured the `web.base.url` System Parameter to `https://demoerp.clinicflow.vet`. |
