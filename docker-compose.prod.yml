@@ -3,12 +3,13 @@
 # Deploy on: Oracle A1Flex VPS (ARM64) + Cloudflare Tunnel
 # Target domain: demoerp.clinicflow.vet
 #
-# HOW TO USE:
-#   1. git clone the repo to /opt/clinicflow on the VPS
-#   2. Create /opt/clinicflow/config/odoo.prod.conf (see docs/vps-deployment-guide.md)
-#   3. In Portainer → Stacks → Add Stack → paste this file
+# HOW TO USE (Portainer Git Stack):
+#   1. In Portainer → Stacks → Add Stack
+#   2. Select "Repository" and paste the GitHub URL
+#   3. Set Compose path to "docker-compose.prod.yml"
 #   4. Fill in the environment variables below
-#   5. Deploy
+#   5. Enable Automatic Updates (optional)
+#   6. Deploy
 # ============================================================
 
 services:
@@ -26,15 +27,25 @@ services:
     volumes:
       # Odoo filestore (attachments, sessions)
       - odoo-prod-data:/var/lib/odoo
-      # Production odoo.conf
-      - ${REPO_PATH}/config/odoo.prod.conf:/etc/odoo/odoo.conf:ro
-      # Custom ClinicFlow addons (git-cloned repo root)
-      - ${REPO_PATH}:/mnt/extra-addons:ro
+      # Custom ClinicFlow addons (Portainer bind mounts the cloned repo root)
+      - .:/mnt/extra-addons:ro
     environment:
       - HOST=postgres_clinicflow
       - PORT=5432
       - USER=odoo
       - PASSWORD=${DB_PASSWORD}
+    command: >
+      odoo 
+      --db-filter=^clinicflow$$ 
+      --proxy-mode 
+      --workers=2 
+      --max-cron-threads=1 
+      --limit-memory-hard=1677721600 
+      --limit-memory-soft=629145600 
+      --limit-request=8192 
+      --limit-time-cpu=60 
+      --limit-time-real=120
+      --admin-passwd=${MASTER_PASSWORD}
     # No ports exposed to host — CF Tunnel connects via internal network
     networks:
       - clinicflow-net

@@ -21,68 +21,31 @@
 
 ---
 
-## Step 1 — Clone the Repository on the VPS
+## Step 1 — Deploy the Portainer Git Stack
 
-```bash
-sudo mkdir -p /opt/clinicflow
-sudo chown $USER:$USER /opt/clinicflow
-cd /opt/clinicflow
+This method securely deploys the application directly from GitHub without needing to manually SSH and clone the repository. It also uses CLI flags for Odoo, so no `odoo.conf` file needs to be manually created.
 
-git clone https://github.com/YOUR_ORG/clinicflow-on-odoo.git .
-```
-
-All subsequent steps reference `/opt/clinicflow` as the working directory.
-
----
-
-## Step 2 — Create the Production Config File
-
-```bash
-mkdir -p /opt/clinicflow/config
-cat > /opt/clinicflow/config/odoo.prod.conf << 'EOF'
-[options]
-addons_path = /usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
-data_dir = /var/lib/odoo
-admin_passwd = CHANGE_THIS_MASTER_PASSWORD
-db_host = postgres_clinicflow
-db_port = 5432
-db_user = odoo
-db_password = CHANGE_THIS_DB_PASSWORD
-dbfilter = ^clinicflow$
-proxy_mode = True
-workers = 2
-max_cron_threads = 1
-limit_memory_hard = 1677721600
-limit_memory_soft = 629145600
-limit_request = 8192
-limit_time_cpu = 60
-limit_time_real = 120
-EOF
-```
-
-> **`proxy_mode = True` is mandatory** when behind Cloudflare Tunnel — without it, session cookies and HTTPS redirects break.
-
----
-
-## Step 3 — Deploy the Portainer Stack
-
-In Portainer → **Stacks → Add Stack → Web editor**, paste the contents of `docker-compose.prod.yml` (see the companion file in this repo).
-
-Set the following **environment variables** in Portainer's stack env section:
+1. In Portainer, go to **Stacks** → **Add Stack**.
+2. Select **Repository** (instead of Web editor).
+3. Enter your GitHub Repository URL (e.g., `https://github.com/YOUR_ORG/clinicflow-on-odoo.git`).
+4. *If the repo is private*, enable Authentication and provide your GitHub Personal Access Token (PAT).
+5. Set the **Compose path** to `docker-compose.prod.yml`.
+6. Set the following **Environment variables**:
 
 | Variable | Value |
 |---|---|
 | `DB_PASSWORD` | your strong database password |
 | `MASTER_PASSWORD` | your Odoo master/admin password |
-| `REPO_PATH` | `/opt/clinicflow` |
+| `CF_TUNNEL_TOKEN` | your Cloudflare Tunnel token (if managing tunnel via Portainer) |
 
-Click **Deploy the stack**.
+7. **Optional**: Enable "Automatic updates" so Portainer can poll GitHub and automatically redeploy when you push new code (or you can trigger it manually in the UI).
+8. Click **Deploy the stack**.
 
 ---
 
-## Step 4 — Initialize the Database
+## Step 2 — Initialize the Database
 
-Run once after the containers are up:
+Run once after the containers are up. Since Portainer manages the volume, you can use the Portainer Console or SSH:
 
 ```bash
 # Install all ClinicFlow modules and create the DB
@@ -92,14 +55,14 @@ docker exec odoo_clinicflow_prod odoo \
 clinicflow_billing,clinicflow_ai,clinicflow_outreach \
   --stop-after-init
 
-# Optional: run seed data
-cat /opt/clinicflow/seed_data.py | docker exec -i odoo_clinicflow_prod \
+# Optional: run seed data (requires SSH)
+cat /data/compose/*/seed_data.py | docker exec -i odoo_clinicflow_prod \
   odoo shell -d clinicflow --no-http
 ```
 
 ---
 
-## Step 5 — Configure Cloudflare Tunnel
+## Step 3 — Configure Cloudflare Tunnel
 
 ### If using `cloudflared` as a system service:
 
@@ -151,7 +114,7 @@ Get the token from Cloudflare Zero Trust → Tunnels → your tunnel → **Confi
 
 ---
 
-## Step 6 — Post-Deploy Configuration (Manual in Odoo UI)
+## Step 4 — Post-Deploy Configuration (Manual in Odoo UI)
 
 After first login at `https://demoerp.clinicflow.vet`:
 
@@ -168,14 +131,15 @@ After first login at `https://demoerp.clinicflow.vet`:
 
 ---
 
-## Step 7 — Keeping the Code Updated
+## Step 5 — Keeping the Code Updated
+
+Because you are using Portainer's Git Stack feature:
+
+1. In Portainer, go to your Stack.
+2. Click **Pull and redeploy**. Portainer will fetch the latest code from GitHub and recreate the containers.
+3. Then, upgrade all ClinicFlow modules via the console/SSH:
 
 ```bash
-# On the VPS
-cd /opt/clinicflow
-git pull origin main
-
-# Then upgrade all ClinicFlow modules
 docker exec odoo_clinicflow_prod odoo \
   -d clinicflow \
   -u clinicflow_core,clinicflow_patient,clinicflow_clinical,\
@@ -226,8 +190,8 @@ sudo ufw status
 
 | Problem | Fix |
 |---|---|
-| Blank page / CSS broken after CF Tunnel | Ensure `proxy_mode = True` in `odoo.prod.conf` |
+| Blank page / CSS broken after CF Tunnel | Ensure `--proxy-mode` is in the `command:` list in `docker-compose.prod.yml` |
 | 502 Bad Gateway | Check container is running: `docker ps` |
-| Module not found | Verify `/opt/clinicflow` is mounted at `/mnt/extra-addons` |
+| Module not found | Verify Portainer bind-mounted `.` to `/mnt/extra-addons` correctly |
 | ARM64 image pull fails | Run `docker pull --platform linux/arm64 odoo:19.0` to confirm |
 | Session keeps expiring | Set `web.base.url` to the correct HTTPS domain in System Parameters |
