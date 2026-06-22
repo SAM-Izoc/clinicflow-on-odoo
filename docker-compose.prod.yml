@@ -4,14 +4,50 @@
 # Target domain: demoerp.clinicflow.vet
 #
 # HOW TO USE:
-#   1. git clone the repo to /opt/clinicflow on the VPS
-#   2. Create /opt/clinicflow/config/odoo.prod.conf (see docs/vps-deployment-guide.md)
-#   3. In Portainer → Stacks → Add Stack → paste this file
-#   4. Fill in the environment variables below
-#   5. Deploy
+#   1. In Portainer → Stacks → Add Stack.
+#   2. Choose "Repository" under Build Method.
+#   3. Enter your repository URL (public, or private with credentials).
+#   4. Set target compose file to: docker-compose.prod.yml
+#   5. Fill in the environment variables:
+#      - DB_PASSWORD (strong password for postgres)
+#      - MASTER_PASSWORD (admin master password for database manager)
+#      - CF_TUNNEL_TOKEN (Cloudflare Tunnel token)
+#   6. Deploy the stack.
 # ============================================================
 
 services:
+
+  # ----------------------------------------------------------
+  # Odoo Init & Migration (runs once before main Odoo service)
+  # ----------------------------------------------------------
+  odoo_init:
+    image: odoo:19.0
+    container_name: odoo_clinicflow_init
+    restart: "no"
+    command: python3 /mnt/extra-addons/config/init_odoo.py
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      # Odoo filestore (attachments, sessions)
+      - odoo-prod-data:/var/lib/odoo
+      # Custom ClinicFlow addons (git-cloned repo root)
+      - .:/mnt/extra-addons:ro
+    environment:
+      - ODOO_DB_HOST=postgres_clinicflow
+      - ODOO_DB_PORT=5432
+      - ODOO_DB_USER=odoo
+      - ODOO_DB_PASSWORD=${DB_PASSWORD}
+      - ODOO_ADMIN_PASSWD=${MASTER_PASSWORD}
+      - ODOO_ADDONS_PATH=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
+      - ODOO_DATA_DIR=/var/lib/odoo
+    networks:
+      - clinicflow-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # ----------------------------------------------------------
   # Odoo 19.0 CE (multi-arch — works on ARM64 + AMD64)
@@ -23,18 +59,30 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      odoo_init:
+        condition: service_completed_successfully
     volumes:
       # Odoo filestore (attachments, sessions)
       - odoo-prod-data:/var/lib/odoo
-      # Production odoo.conf
-      - ${REPO_PATH}/config/odoo.prod.conf:/etc/odoo/odoo.conf:ro
       # Custom ClinicFlow addons (git-cloned repo root)
-      - ${REPO_PATH}:/mnt/extra-addons:ro
+      - .:/mnt/extra-addons:ro
     environment:
-      - HOST=postgres_clinicflow
-      - PORT=5432
-      - USER=odoo
-      - PASSWORD=${DB_PASSWORD}
+      - ODOO_DB_HOST=postgres_clinicflow
+      - ODOO_DB_PORT=5432
+      - ODOO_DB_USER=odoo
+      - ODOO_DB_PASSWORD=${DB_PASSWORD}
+      - ODOO_ADMIN_PASSWD=${MASTER_PASSWORD}
+      - ODOO_DBFILTER=^clinicflow$$
+      - ODOO_PROXY_MODE=True
+      - ODOO_WORKERS=2
+      - ODOO_MAX_CRON_THREADS=1
+      - ODOO_LIMIT_MEMORY_HARD=1677721600
+      - ODOO_LIMIT_MEMORY_SOFT=629145600
+      - ODOO_LIMIT_REQUEST=8192
+      - ODOO_LIMIT_TIME_CPU=60
+      - ODOO_LIMIT_TIME_REAL=120
+      - ODOO_ADDONS_PATH=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
+      - ODOO_DATA_DIR=/var/lib/odoo
     # No ports exposed to host — CF Tunnel connects via internal network
     networks:
       - clinicflow-net
