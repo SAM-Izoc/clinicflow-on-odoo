@@ -39,9 +39,9 @@ services:
 
         print("=== Starting ClinicFlow Database Initialization/Upgrade (Inline) ===")
 
-        db_host = os.environ.get("ODOO_DB_HOST", "postgres_clinicflow")
-        db_user = os.environ.get("ODOO_DB_USER", "odoo")
-        db_password = os.environ.get("ODOO_DB_PASSWORD")
+        db_host = os.environ.get("HOST", "postgres_clinicflow")
+        db_user = os.environ.get("USER", "odoo")
+        db_password = os.environ.get("PASSWORD")
         db_name = "clinicflow"
 
         # Wait for Postgres
@@ -172,6 +172,10 @@ services:
       # Odoo filestore (attachments, sessions)
       - odoo-prod-data:/var/lib/odoo
     environment:
+      - HOST=postgres_clinicflow
+      - PORT=5432
+      - USER=odoo
+      - PASSWORD=${DB_PASSWORD}
       - ODOO_DB_HOST=postgres_clinicflow
       - ODOO_DB_PORT=5432
       - ODOO_DB_USER=odoo
@@ -206,6 +210,10 @@ services:
       # Odoo filestore (attachments, sessions)
       - odoo-prod-data:/var/lib/odoo
     environment:
+      - HOST=postgres_clinicflow
+      - PORT=5432
+      - USER=odoo
+      - PASSWORD=${DB_PASSWORD}
       - ODOO_DB_HOST=postgres_clinicflow
       - ODOO_DB_PORT=5432
       - ODOO_DB_USER=odoo
