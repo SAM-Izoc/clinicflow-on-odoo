@@ -33,6 +33,7 @@ class ClinicFlowVisit(models.Model):
     charge_line_ids = fields.One2many('clinicflow.visit.charge.line', 'visit_id', string="Billing Charges")
     prescription_ids = fields.One2many('clinicflow.prescription', 'visit_id', string="Prescriptions")
     invoice_id = fields.Many2one('account.move', string="Related Invoice", readonly=True)
+    medical_document_ids = fields.One2many('clinicflow.medical.document', 'visit_id', string="Documents")
 
     @api.model_create_multi
     def create(self, vals_list):

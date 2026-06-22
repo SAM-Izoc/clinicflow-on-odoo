@@ -58,10 +58,16 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <!-- Menu Item under parent Outreach menu -->
+    <!-- Outreach & Reminders parent menu (for activity/logs, not templates) -->
+    <menuitem id="menu_clinicflow_outreach_root"
+              name="Outreach &amp; Reminders"
+              parent="clinicflow_core.menu_clinicflow_root"
+              sequence="35"/>
+
+    <!-- Outreach Logs sub-menu -->
     <menuitem id="menu_clinicflow_outreach_log"
               name="Outreach Logs"
               parent="menu_clinicflow_outreach_root"
               action="action_clinicflow_outreach_log"
-              sequence="20"/>
+              sequence="10"/>
 </odoo>

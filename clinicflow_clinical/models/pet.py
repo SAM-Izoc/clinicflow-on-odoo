@@ -14,6 +14,25 @@ class ClinicFlowPet(models.Model):
     admission_ids = fields.One2many('clinicflow.admission', 'pet_id', string="Hospitalizations")
     timeline_ids = fields.One2many('clinicflow.timeline.event', 'pet_id', string="Timeline Events")
     appointment_ids = fields.One2many('calendar.event', 'pet_id', string="Appointments")
+    medical_document_ids = fields.One2many('clinicflow.medical.document', 'pet_id', string="Medical Documents")
+    document_count = fields.Integer(string="Medical Docs", compute="_compute_document_count")
+
+    @api.depends('medical_document_ids')
+    def _compute_document_count(self):
+        for rec in self:
+            rec.document_count = len(rec.medical_document_ids)
+
+    def action_view_documents(self):
+        self.ensure_one()
+        return {
+            'name': f"Documents — {self.name}",
+            'type': 'ir.actions.act_window',
+            'res_model': 'clinicflow.medical.document',
+            'view_mode': 'list,form',
+            'domain': [('pet_id', '=', self.id)],
+            'context': {'default_pet_id': self.id},
+        }
+
 
     @api.depends('visit_ids.date', 'visit_ids.status',
                  'appointment_ids.start', 'appointment_ids.pet_id')

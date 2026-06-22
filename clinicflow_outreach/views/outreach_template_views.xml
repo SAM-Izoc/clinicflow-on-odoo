@@ -39,6 +39,7 @@
                             <li><code>{{pet_name}}</code>: The name of the pet patient.</li>
                             <li><code>{{vaccine_name}}</code>: The name of the vaccine product.</li>
                             <li><code>{{due_date}}</code>: The date the vaccination is scheduled or overdue.</li>
+                            <li><code>{{clinic_name}}</code>: Your organisation's name (pulled from Company Settings).</li>
                         </ul>
                     </div>
                 </sheet>
@@ -54,15 +55,18 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <!-- Menu Items under Root -->
-    <menuitem id="menu_clinicflow_outreach_root"
-              name="Outreach &amp; Reminders"
+    <!-- ===================================================
+         Templates parent menu (shared by Outreach, SOAP, etc)
+         =================================================== -->
+    <menuitem id="menu_clinicflow_templates_root"
+              name="Templates"
               parent="clinicflow_core.menu_clinicflow_root"
-              sequence="35"/>
+              sequence="40"/>
 
+    <!-- Outreach Templates sub-menu -->
     <menuitem id="menu_clinicflow_outreach_template"
               name="Outreach Templates"
-              parent="menu_clinicflow_outreach_root"
+              parent="menu_clinicflow_templates_root"
               action="action_clinicflow_outreach_template"
               sequence="10"/>
 </odoo>

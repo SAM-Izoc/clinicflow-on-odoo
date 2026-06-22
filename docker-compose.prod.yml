@@ -1,0 +1,111 @@
+# ============================================================
+# ClinicFlow — Production Portainer Stack
+# Deploy on: Oracle A1Flex VPS (ARM64) + Cloudflare Tunnel
+# Target domain: demoerp.clinicflow.vet
+#
+# HOW TO USE:
+#   1. git clone the repo to /opt/clinicflow on the VPS
+#   2. Create /opt/clinicflow/config/odoo.prod.conf (see docs/vps-deployment-guide.md)
+#   3. In Portainer → Stacks → Add Stack → paste this file
+#   4. Fill in the environment variables below
+#   5. Deploy
+# ============================================================
+
+services:
+
+  # ----------------------------------------------------------
+  # Odoo 19.0 CE (multi-arch — works on ARM64 + AMD64)
+  # ----------------------------------------------------------
+  odoo:
+    image: odoo:19.0
+    container_name: odoo_clinicflow_prod
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      # Odoo filestore (attachments, sessions)
+      - odoo-prod-data:/var/lib/odoo
+      # Production odoo.conf
+      - ${REPO_PATH}/config/odoo.prod.conf:/etc/odoo/odoo.conf:ro
+      # Custom ClinicFlow addons (git-cloned repo root)
+      - ${REPO_PATH}:/mnt/extra-addons:ro
+    environment:
+      - HOST=postgres_clinicflow
+      - PORT=5432
+      - USER=odoo
+      - PASSWORD=${DB_PASSWORD}
+    # No ports exposed to host — CF Tunnel connects via internal network
+    networks:
+      - clinicflow-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+  # ----------------------------------------------------------
+  # PostgreSQL 15
+  # ----------------------------------------------------------
+  postgres:
+    image: postgres:15
+    container_name: postgres_clinicflow
+    restart: always
+    environment:
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=clinicflow
+    volumes:
+      - postgres-prod-data:/var/lib/postgresql/data
+    networks:
+      - clinicflow-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d clinicflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ----------------------------------------------------------
+  # Cloudflare Tunnel
+  # Get your token from:
+  #   Cloudflare Zero Trust → Networks → Tunnels
+  #   → your tunnel → Configure → Docker
+  # ----------------------------------------------------------
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared_clinicflow
+    restart: always
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${CF_TUNNEL_TOKEN}
+    depends_on:
+      - odoo
+    networks:
+      - clinicflow-net
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+# ----------------------------------------------------------
+# Volumes
+# ----------------------------------------------------------
+volumes:
+  odoo-prod-data:
+    name: odoo-clinicflow-prod-data
+  postgres-prod-data:
+    name: postgres-clinicflow-prod-data
+
+# ----------------------------------------------------------
+# Network (internal — no host port exposure needed)
+# ----------------------------------------------------------
+networks:
+  clinicflow-net:
+    driver: bridge
+    name: clinicflow-prod-net

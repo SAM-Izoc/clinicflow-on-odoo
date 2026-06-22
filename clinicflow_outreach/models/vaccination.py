@@ -82,18 +82,20 @@ class ClinicFlowVaccination(models.Model):
             elif selected_channel == 'sms':
                 body = "Reminder: {{pet_name}} is due for {{vaccine_name}} on {{due_date}}."
             else:
-                body = "Dear {{owner_name}},\n\nThis is to remind you that {{pet_name}} is scheduled to receive their {{vaccine_name}} vaccine on {{due_date}}.\n\nBest regards,\nClinicFlow Vet Team"
+                body = "Dear {{owner_name}},\n\nThis is to remind you that {{pet_name}} is scheduled to receive their {{vaccine_name}} vaccine on {{due_date}}.\n\nBest regards,\n{{clinic_name}}"
 
         # Resolve placeholders
         owner_name = owner.name or "Client"
         pet_name = self.pet_id.name or "your pet"
         vaccine_name = self.vaccine_product_id.name or "vaccination"
         due_date = fields.Date.to_string(self.date_due) if self.date_due else "soon"
+        clinic_name = self.env.company.name or "Your Veterinary Clinic"
 
         compiled_body = body.replace('{{owner_name}}', owner_name)\
                              .replace('{{pet_name}}', pet_name)\
                              .replace('{{vaccine_name}}', vaccine_name)\
-                             .replace('{{due_date}}', due_date)
+                             .replace('{{due_date}}', due_date)\
+                             .replace('{{clinic_name}}', clinic_name)
 
         # Create log record
         log = self.env['clinicflow.outreach.log'].create({

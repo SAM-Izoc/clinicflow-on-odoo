@@ -17,9 +17,9 @@ gantt
     Sprint 3 : Documents & Reports :done,  2026-06-19, 2026-06-20
     Sprint 4 : AI Abstraction Layer :done,  2026-06-20, 2026-06-21
     section Future Work
-    Sprint 5 : Owner 360 & Balances :active,  2026-06-21, 2026-06-23
-    Sprint 6 : Outreach Campaigns   :future,  2026-06-23, 2026-06-25
-    Sprint 7 : Document Management  :future,  2026-06-25, 2026-06-27
+    Sprint 5 : Owner 360 & Balances :done,  2026-06-21, 2026-06-23
+    Sprint 6 : Vaccination & Outreach Campaigns   :done,  2026-06-23, 2026-06-25
+    Sprint 7 : Document Management  :active,  2026-06-25, 2026-06-27
     Sprint 8 : Voice Dictation      :future,  2026-06-27, 2026-06-29
     Sprint 9 : Client Portal        :future,  2026-06-29, 2026-07-02
     Sprint 10 : Migration Utilities  :future,  2026-07-02, 2026-07-05
@@ -69,15 +69,21 @@ gantt
 
 ## Future Backlog (Sprints 5–10)
 
-### Sprint 5: Owner 360 & Advanced Billing (Active)
+### Sprint 5: Owner 360 & Advanced Billing (Completed)
 - **Goal**: Holistic contact management.
 - - Unified owner dashboard displaying total pets owned, outstanding balance aggregates, appointment history across pets, and communications.
 
-### Sprint 6: Vaccination & Outreach Campaigns (Future)
+### Sprint 6: Vaccination & Outreach Campaigns (Completed)
 - **Goal**: Automated clinic reminders.
-- - WhatsApp, SMS, and Email outreach templates linked to Vaccinations Due list.
+- **Features Delivered**:
+  - `clinicflow_outreach` module with `clinicflow.outreach.template` and `clinicflow.outreach.log` models.
+  - Decoupled `clinicflow.communication.service` abstraction routing to WhatsApp, SMS, and Email mock providers.
+  - Configurable channel priority and throttling via `ir.config_parameter`.
+  - Daily cron job (`cron_process_vaccination_reminders`) that auto-queues reminders for vaccinations due within 7 days.
+  - Manual "Send Reminder" action button on individual vaccination records.
+  - Config Settings page for API keys and channel priority.
 
-### Sprint 7: Document Management & Imaging (Future)
+### Sprint 7: Document Management & Imaging (Active)
 - **Goal**: Rich medical diagnostics and scans.
 - - Document folder tree integrations for lab results, imaging scans, and referral PDF storage.
 

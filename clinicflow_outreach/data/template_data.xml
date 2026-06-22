@@ -22,7 +22,7 @@ This is to remind you that {{pet_name}} is due for their {{vaccine_name}} vaccin
 Please call us at your earliest convenience to book a visit.
 
 Sincerely,
-ClinicFlow Veterinary Team</field>
+{{clinic_name}}</field>
         </record>
     </data>
 </odoo>

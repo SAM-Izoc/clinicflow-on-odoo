@@ -10,6 +10,7 @@
     ],
     'data': [
         'security/ir.model.access.csv',
+        'views/document_views.xml',
         'views/visit_views.xml',
         'views/admission_views.xml',
         'views/calendar_views.xml',

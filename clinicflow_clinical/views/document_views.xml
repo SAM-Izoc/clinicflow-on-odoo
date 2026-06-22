@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+    <!-- ===========================
+         List View
+         =========================== -->
+    <record id="view_clinicflow_medical_document_tree" model="ir.ui.view">
+        <field name="name">clinicflow.medical.document.list</field>
+        <field name="model">clinicflow.medical.document</field>
+        <field name="arch" type="xml">
+            <list string="Medical Documents" multi_edit="1">
+                <field name="date"/>
+                <field name="category" widget="badge"
+                    decoration-info="category == 'lab_result'"
+                    decoration-success="category == 'imaging'"
+                    decoration-warning="category == 'consent_form'"
+                    decoration-danger="category == 'referral'"
+                    decoration-muted="category == 'other'"/>
+                <field name="name"/>
+                <field name="pet_id"/>
+                <field name="visit_id"/>
+                <field name="file_name" string="File"/>
+                <field name="file_size_display" string="Size"/>
+                <field name="uploaded_by"/>
+                <button name="action_download" type="object"
+                    string="Download" icon="fa-download"
+                    invisible="not attachment_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ===========================
+         Form View
+         =========================== -->
+    <record id="view_clinicflow_medical_document_form" model="ir.ui.view">
+        <field name="name">clinicflow.medical.document.form</field>
+        <field name="model">clinicflow.medical.document</field>
+        <field name="arch" type="xml">
+            <form string="Medical Document">
+                <header>
+                    <button name="action_download" type="object"
+                        string="Download File" class="oe_highlight"
+                        invisible="not attachment_id"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Document Title" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Blood Panel Results — June 2026"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Classification">
+                            <field name="category"/>
+                            <field name="date"/>
+                            <field name="uploaded_by" readonly="1"/>
+                        </group>
+                        <group string="Clinical Context">
+                            <field name="pet_id" options="{'no_create': True}"/>
+                            <field name="visit_id" domain="[('pet_id', '=', pet_id)]" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+
+                    <group string="File Attachment">
+                        <field name="file_upload" filename="file_name" widget="binary"/>
+                        <field name="attachment_id" invisible="1"/>
+                        <field name="file_name" readonly="1" invisible="not file_name"/>
+                        <field name="file_size_display" readonly="1" string="Size" invisible="not file_name"/>
+                        <field name="mimetype" readonly="1" string="Type" invisible="not mimetype"/>
+                    </group>
+
+                    <group string="Clinical Notes">
+                        <field name="notes" nolabel="1" placeholder="Add any relevant clinical context, findings, or observations about this document..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ===========================
+         Search View
+         =========================== -->
+    <record id="view_clinicflow_medical_document_search" model="ir.ui.view">
+        <field name="name">clinicflow.medical.document.search</field>
+        <field name="model">clinicflow.medical.document</field>
+        <field name="arch" type="xml">
+            <search string="Search Documents">
+                <field name="name" string="Title"/>
+                <field name="pet_id" string="Patient"/>
+                <field name="visit_id" string="Visit"/>
+                <field name="uploaded_by" string="Uploaded By"/>
+                <separator/>
+                <filter string="Lab Results" name="lab_result" domain="[('category', '=', 'lab_result')]"/>
+                <filter string="Imaging / X-Ray" name="imaging" domain="[('category', '=', 'imaging')]"/>
+                <filter string="Consent Forms" name="consent_form" domain="[('category', '=', 'consent_form')]"/>
+                <filter string="Referral Letters" name="referral" domain="[('category', '=', 'referral')]"/>
+                <filter string="Clinical Photos" name="clinical_photo" domain="[('category', '=', 'clinical_photo')]"/>
+                <filter string="Discharge Summaries" name="discharge" domain="[('category', '=', 'discharge')]"/>
+                <separator/>
+                <filter string="Has File Attached" name="has_file" domain="[('attachment_id', '!=', False)]"/>
+                <filter string="This Month" name="this_month"
+                    domain="[('date', '&gt;=', (datetime.datetime.now().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Group by Patient" name="group_pet" context="{'group_by': 'pet_id'}"/>
+                <filter string="Group by Category" name="group_category" context="{'group_by': 'category'}"/>
+                <filter string="Group by Visit" name="group_visit" context="{'group_by': 'visit_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ===========================
+         Window Action
+         =========================== -->
+    <record id="action_clinicflow_medical_document" model="ir.actions.act_window">
+        <field name="name">Medical Documents</field>
+        <field name="res_model">clinicflow.medical.document</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_clinicflow_medical_document_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No documents uploaded yet.
+            </p>
+            <p>
+                Upload lab results, imaging scans, consent forms, referral letters, and more.
+            </p>
+        </field>
+    </record>
+
+    <!-- ===========================
+         Menu Items
+         =========================== -->
+    <menuitem id="menu_clinicflow_documents"
+              name="Documents"
+              parent="clinicflow_core.menu_clinicflow_root"
+              action="action_clinicflow_medical_document"
+              sequence="25"/>
+</data>
+</odoo>

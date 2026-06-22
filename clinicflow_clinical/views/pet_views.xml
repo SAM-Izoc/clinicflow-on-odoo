@@ -41,6 +41,13 @@
                 <button name="action_create_admission_quick" string="+ Admit Patient" type="object" class="btn btn-secondary"/>
             </xpath>
 
+            <!-- Add Documents stat button -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_documents" type="object" class="oe_stat_button" icon="fa-folder-open">
+                    <field name="document_count" widget="statinfo" string="Docs"/>
+                </button>
+            </xpath>
+
             <!-- Inject tabs inside notebook -->
             <xpath expr="//notebook" position="inside">
                 <!-- Visits Tab -->
@@ -134,6 +141,30 @@
                                 </t>
                             </templates>
                         </kanban>
+                    </field>
+                </page>
+
+                <!-- Documents Tab -->
+                <page string="Documents" name="documents">
+                    <field name="medical_document_ids" context="{'default_pet_id': id}">
+                        <list string="Medical Documents" editable="bottom">
+                            <field name="date"/>
+                            <field name="category" widget="badge"
+                                decoration-info="category == 'lab_result'"
+                                decoration-success="category == 'imaging'"
+                                decoration-warning="category == 'consent_form'"
+                                decoration-danger="category == 'referral'"
+                                decoration-muted="category == 'other'"/>
+                            <field name="name"/>
+                            <field name="visit_id" domain="[('pet_id', '=', parent.id)]"
+                                options="{'no_create': True}"/>
+                            <field name="file_name" string="File" readonly="1"/>
+                            <field name="file_size_display" string="Size" readonly="1"/>
+                            <field name="uploaded_by" readonly="1"/>
+                            <button name="action_download" type="object"
+                                string="" icon="fa-download" title="Download"
+                                invisible="not attachment_id"/>
+                        </list>
                     </field>
                 </page>
             </xpath>

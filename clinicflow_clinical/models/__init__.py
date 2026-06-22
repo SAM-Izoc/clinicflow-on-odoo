@@ -7,3 +7,4 @@ from . import timeline_event
 from . import calendar_event
 from . import dashboard
 from . import partner
+from . import medical_document

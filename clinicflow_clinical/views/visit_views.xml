@@ -85,6 +85,26 @@
                                 </list>
                             </field>
                         </page>
+                        <page string="Documents" name="visit_documents">
+                            <field name="medical_document_ids" domain="[('visit_id', '=', id)]"
+                                context="{'default_visit_id': id, 'default_pet_id': pet_id}">
+                                <list string="Documents" editable="bottom">
+                                    <field name="date"/>
+                                    <field name="category" widget="badge"
+                                        decoration-info="category == 'lab_result'"
+                                        decoration-success="category == 'imaging'"
+                                        decoration-warning="category == 'consent_form'"
+                                        decoration-danger="category == 'referral'"
+                                        decoration-muted="category == 'other'"/>
+                                    <field name="name"/>
+                                    <field name="file_name" string="File" readonly="1"/>
+                                    <field name="file_size_display" string="Size" readonly="1"/>
+                                    <button name="action_download" type="object"
+                                        string="" icon="fa-download" title="Download"
+                                        invisible="not attachment_id"/>
+                                </list>
+                            </field>
+                        </page>
                     </notebook>
                 </sheet>
             </form>
