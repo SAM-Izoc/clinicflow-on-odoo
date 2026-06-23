@@ -4,6 +4,8 @@ class ClinicFlowDashboard(models.TransientModel):
     _name = 'clinicflow.dashboard'
     _description = 'ClinicFlow Dashboard Helper'
 
+    name = fields.Char(string="Name", default="ClinicFlow Operations Dashboard")
+
     reception_today_appointments = fields.Integer(string="Today's Appointments", compute="_compute_metrics")
     reception_waiting = fields.Integer(string="Waiting Queue", compute="_compute_metrics")
     reception_checked_in = fields.Integer(string="Checked In", compute="_compute_metrics")
