@@ -1,7 +1,10 @@
 FROM odoo:19.0
 
-# Switch to root to copy files and change ownership
+# Switch to root to copy files and install python dependencies
 USER root
+
+# Install external python dependencies
+RUN pip3 install --break-system-packages openpyxl ofxparse qifparse
 
 # Create the extra-addons directory (just in case)
 RUN mkdir -p /mnt/extra-addons
