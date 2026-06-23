@@ -52,7 +52,7 @@ try:
 except Exception as e:
     print(f"Error checking database tables: {e}")
 
-modules = "clinicflow_core,clinicflow_patient,clinicflow_clinical,clinicflow_billing,clinicflow_ai,clinicflow_outreach"
+modules = "clinicflow_core,clinicflow_patient,clinicflow_clinical,clinicflow_billing,clinicflow_ai,clinicflow_outreach,base_accounting_kit"
 
 env = os.environ.copy()
 
@@ -62,7 +62,7 @@ if db_initialized:
         "odoo",
         "-d", db_name,
         "-u", modules,
-        "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons",
+        "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons,/mnt/extra-addons/base_accounting_kit",
         "--db_host=" + db_host,
         "--db_port=5432",
         "--db_user=" + db_user,
@@ -75,7 +75,7 @@ else:
         "odoo",
         "-d", db_name,
         "-i", modules,
-        "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons",
+        "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons,/mnt/extra-addons/base_accounting_kit",
         "--db_host=" + db_host,
         "--db_port=5432",
         "--db_user=" + db_user,
@@ -106,7 +106,7 @@ if not db_initialized:
                 "odoo",
                 "shell",
                 "-d", db_name,
-                "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons",
+                "--addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons,/mnt/extra-addons/base_accounting_kit",
                 "--db_host=" + db_host,
                 "--db_port=5432",
                 "--db_user=" + db_user,

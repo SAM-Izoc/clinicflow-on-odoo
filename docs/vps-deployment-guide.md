@@ -57,7 +57,7 @@ Once you deploy the stack, the deployment and setup happen automatically:
 2. The **`odoo_init`** container starts. It runs the inline script which:
    - Waits for Postgres to be fully ready.
    - Checks if Odoo database tables already exist.
-   - Since it's a new database, it runs Odoo to install all custom modules: `clinicflow_core`, `clinicflow_patient`, `clinicflow_clinical`, `clinicflow_billing`, `clinicflow_ai`, `clinicflow_outreach`.
+   - Since it's a new database, it runs Odoo to install all custom modules: `clinicflow_core`, `clinicflow_patient`, `clinicflow_clinical`, `clinicflow_billing`, `clinicflow_ai`, `clinicflow_outreach`, `base_accounting_kit`.
    - Runs [seed_data.py](file:///d:/MyApps/For%20SAM/clinicflow-on-odoo/seed_data.py) automatically inside the Odoo shell.
 3. Once initialization is finished, the `odoo_init` container exits successfully (`exit code 0`).
 4. The main **`odoo`** web server container starts up automatically (because it depends on `odoo_init` completing successfully) and connects to `clinicflow-sam_clinic-network`.
