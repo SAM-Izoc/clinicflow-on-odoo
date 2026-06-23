@@ -68,8 +68,9 @@ services:
 
         print("Postgres is ready. Checking database state...")
 
-        # Check if tables exist
+        # Check if custom modules are installed
         db_initialized = False
+        custom_modules_installed = False
         try:
             conn = psycopg2.connect(
                 host=db_host,
@@ -78,8 +79,15 @@ services:
                 password=db_password
             )
             cur = conn.cursor()
+            # Check if Odoo base registry table exists
             cur.execute("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'ir_module_module');")
             db_initialized = cur.fetchone()[0]
+            
+            if db_initialized:
+                # Check if clinicflow_core module is installed
+                cur.execute("SELECT EXISTS (SELECT 1 FROM ir_module_module WHERE name = 'clinicflow_core' AND state = 'installed');")
+                custom_modules_installed = cur.fetchone()[0]
+                
             cur.close()
             conn.close()
         except Exception as e:
@@ -89,8 +97,8 @@ services:
 
         env = os.environ.copy()
 
-        if db_initialized:
-            print("Database is already initialized. Upgrading modules...")
+        if custom_modules_installed:
+            print("ClinicFlow modules are already installed. Upgrading modules...")
             cmd = [
                 "odoo",
                 "-d", db_name,
@@ -103,7 +111,7 @@ services:
                 "--stop-after-init"
             ]
         else:
-            print("Database is new. Installing ClinicFlow modules...")
+            print("ClinicFlow modules are not installed yet. Installing ClinicFlow modules...")
             cmd = [
                 "odoo",
                 "-d", db_name,
@@ -127,7 +135,7 @@ services:
             print(f"Odoo command failed with return code {result.returncode}")
             sys.exit(result.returncode)
 
-        if not db_initialized:
+        if not custom_modules_installed:
             print("Loading seed data...")
             seed_file = "/mnt/extra-addons/seed_data.py"
             if os.path.exists(seed_file):
