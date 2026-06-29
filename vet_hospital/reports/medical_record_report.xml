@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_medical_record">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Medical Record: <span t-field="o.name"/></h2>
+                        <p><strong>Patient:</strong> <span t-field="o.patient_id"/></p>
+                        <p><strong>Owner:</strong> <span t-field="o.owner_id"/></p>
+                        <p><strong>Veterinarian:</strong> <span t-field="o.vet_id"/></p>
+                        <p><strong>Date:</strong> <span t-field="o.date_time"/></p>
+                        <p><strong>Status:</strong> <span t-field="o.status"/></p>
+                        <h3>SOAP Note</h3>
+                        <p><strong>Subjective:</strong> <span t-field="o.subjective"/></p>
+                        <p><strong>Objective:</strong> <span t-field="o.objective"/></p>
+                        <p><strong>Assessment:</strong> <span t-field="o.assessment"/></p>
+                        <p><strong>Plan:</strong> <span t-field="o.plan"/></p>
+                        <h3 t-if="o.diagnosis_ids">Diagnoses</h3>
+                        <ul t-if="o.diagnosis_ids">
+                            <li t-foreach="o.diagnosis_ids" t-as="diagnosis">
+                                <span t-field="diagnosis.name"/>
+                                <span t-if="diagnosis.code"> (<span t-field="diagnosis.code"/>)</span>
+                            </li>
+                        </ul>
+                        <h3 t-if="o.vital_sign_ids">Vital Signs</h3>
+                        <table t-if="o.vital_sign_ids" class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Temperature</th>
+                                    <th>Heart Rate</th>
+                                    <th>Respiration</th>
+                                    <th>Weight</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.vital_sign_ids" t-as="vital">
+                                    <td><span t-field="vital.date_time"/></td>
+                                    <td><span t-field="vital.temperature"/> °C</td>
+                                    <td><span t-field="vital.heart_rate"/> bpm</td>
+                                    <td><span t-field="vital.respiration"/>/min</td>
+                                    <td><span t-field="vital.weight"/> kg</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-muted">
+                            Printed: <span t-out="time.strftime('%Y-%m-%d %H:%M')"/>
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_appointment">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Appointment: <span t-field="o.name"/></h2>
+                        <p><strong>Patient:</strong> <span t-field="o.patient_id"/></p>
+                        <p><strong>Owner:</strong> <span t-field="o.owner_id"/></p>
+                        <p><strong>Veterinarian:</strong> <span t-field="o.vet_id"/></p>
+                        <p><strong>Date:</strong> <span t-field="o.date_time"/></p>
+                        <p><strong>Reason:</strong> <span t-field="o.reason"/></p>
+                        <p><strong>Symptoms:</strong> <span t-field="o.symptoms"/></p>
+                        <p><strong>Status:</strong> <span t-field="o.status"/></p>
+                        <p><strong>Duration:</strong> <span t-field="o.duration"/> minutes</p>
+                        <p class="text-muted">
+                            Printed: <span t-out="time.strftime('%Y-%m-%d %H:%M')"/>
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_invoice">
+        <t t-call="account.report_invoice"/>
+    </template>
+
+    <!-- Medical Record Report -->
+    <record id="action_report_medical_record" model="ir.actions.report">
+        <field name="name">Medical Record</field>
+        <field name="model">vet.medical_record</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">vet_hospital.report_medical_record</field>
+        <field name="print_report_name">'Medical Record - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_vet_medical_record"/>
+    </record>
+
+    <!-- Appointment Report -->
+    <record id="action_report_appointment" model="ir.actions.report">
+        <field name="name">Appointment Report</field>
+        <field name="model">vet.appointment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">vet_hospital.report_appointment</field>
+        <field name="print_report_name">'Appointment - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_vet_appointment"/>
+    </record>
+
+    <!-- Invoice Report -->
+    <record id="action_report_invoice" model="ir.actions.report">
+        <field name="name">Veterinary Invoice</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">vet_hospital.report_invoice</field>
+        <field name="print_report_name">'Invoice - %s' % (object.name)</field>
+    </record>
+</odoo>

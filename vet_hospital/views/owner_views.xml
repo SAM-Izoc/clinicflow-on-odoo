@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Owner Form View -->
+    <record id="view_res_partner_owner_form" model="ir.ui.view">
+        <field name="name">res.partner.owner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <sheet position="before">
+                <div class="alert alert-info" role="alert" invisible="not is_owner">
+                    This is a Pet Owner with <field name="total_patients"/> patient(s). Total spent: $<field name="total_spent"/>
+                </div>
+            </sheet>
+            <xpath expr="//page[@name='internal_notes']" position="before">
+                <page string="Veterinary Info" invisible="not is_owner">
+                    <group>
+                        <field name="is_owner"/>
+                        <field name="total_patients"/>
+                        <field name="total_spent"/>
+                    </group>
+                    <group>
+                        <field name="emergency_contact" placeholder="Emergency contact name"/>
+                        <field name="emergency_phone" placeholder="Emergency phone number"/>
+                        <field name="preferred_vet_id"/>
+                        <field name="notification_method"/>
+                    </group>
+                    <separator string="Pets/Patients"/>
+                    <field name="patient_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="species_id"/>
+                            <field name="breed_id"/>
+                            <field name="status"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Veterinarian Form View -->
+    <record id="view_res_partner_vet_form" model="ir.ui.view">
+        <field name="name">res.partner.vet.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <sheet position="before">
+                <div class="alert alert-success" role="alert" invisible="not is_vet">
+                    This is a Veterinarian with <field name="appointment_ids" widget="statinfo"/> appointments.
+                </div>
+            </sheet>
+            <xpath expr="//page[@name='internal_notes']" position="before">
+                <page string="Veterinary License" invisible="not is_vet">
+                    <group>
+                        <field name="is_vet"/>
+                        <field name="specialization"/>
+                        <field name="license_number"/>
+                        <field name="license_expiry"/>
+                    </group>
+                </page>
+                <page string="Working Hours" invisible="not is_vet">
+                    <group string="Monday">
+                        <field name="monday_from"/>
+                        <field name="monday_to"/>
+                    </group>
+                    <group string="Tuesday">
+                        <field name="tuesday_from"/>
+                        <field name="tuesday_to"/>
+                    </group>
+                    <group string="Wednesday">
+                        <field name="wednesday_from"/>
+                        <field name="wednesday_to"/>
+                    </group>
+                    <group string="Thursday">
+                        <field name="thursday_from"/>
+                        <field name="thursday_to"/>
+                    </group>
+                    <group string="Friday">
+                        <field name="friday_from"/>
+                        <field name="friday_to"/>
+                    </group>
+                    <group string="Saturday">
+                        <field name="saturday_from"/>
+                        <field name="saturday_to"/>
+                    </group>
+                    <group string="Sunday">
+                        <field name="sunday_from"/>
+                        <field name="sunday_to"/>
+                    </group>
+                </page>
+                <page string="Appointments" invisible="not is_vet">
+                    <field name="appointment_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="date_time"/>
+                            <field name="patient_id"/>
+                            <field name="status"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Owner Action -->
+    <record id="action_vet_owner" model="ir.actions.act_window">
+        <field name="name">Pet Owners</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_owner', '=', True)]</field>
+        <field name="context">{'default_is_owner': True}</field>
+    </record>
+</odoo>

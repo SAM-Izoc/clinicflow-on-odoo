@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- MEDICAL RECORD MERCK BUTTONS -->
+    <record id="view_vet_medical_record_form_merck" model="ir.ui.view">
+        <field name="name">vet.medical_record.form.merck</field>
+        <field name="model">vet.medical_record</field>
+        <field name="inherit_id" ref="vet_hospital.view_vet_medical_record_form"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button name="action_search_merck_diagnosis" 
+                        type="object" 
+                        string="🔍 Merck: Diagnosis" 
+                        class="oe_link"
+                        help="Search diagnosis in Merck Vet Manual"
+                        invisible="not primary_diagnosis_id"/>
+                <button name="action_search_merck_symptom" 
+                        type="object" 
+                        string="🔍 Merck: Symptoms" 
+                        class="oe_link"
+                        help="Search symptoms in Merck Vet Manual"
+                        invisible="not subjective"/>
+                <button name="action_search_merck_treatment" 
+                        type="object" 
+                        string="🔍 Merck: Treatment" 
+                        class="oe_link"
+                        help="Search treatment plan in Merck Vet Manual"
+                        invisible="not plan"/>
+                <button name="action_search_merck_assessment" 
+                        type="object" 
+                        string="🔍 Merck: Assessment" 
+                        class="oe_link"
+                        help="Search assessment in Merck Vet Manual"
+                        invisible="not assessment"/>
+            </header>
+            <xpath expr="//page[@name='soap']/group[1]" position="after">
+                <div class="alert alert-info" role="alert">
+                    <i class="fa fa-lightbulb-o"/> 
+                    💡 Tip: Use Merck buttons in header to quickly search diagnosis, symptoms, treatment, and assessment.
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- PATIENT MERCK BUTTONS -->
+    <record id="view_vet_patient_form_merck" model="ir.ui.view">
+        <field name="name">vet.patient.form.merck</field>
+        <field name="model">vet.patient</field>
+        <field name="inherit_id" ref="vet_hospital.view_vet_patient_form"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button name="action_search_merck_breed" 
+                        type="object" 
+                        string="🔍 Merck: Breed Info" 
+                        class="oe_link"
+                        help="Search breed information in Merck Vet Manual"/>
+                <button name="action_search_merck_condition" 
+                        type="object" 
+                        string="🔍 Merck: Conditions" 
+                        class="oe_link"
+                        help="Search medical conditions in Merck Vet Manual"
+                        invisible="not medical_conditions"/>
+            </header>
+        </field>
+    </record>
+
+    <!-- VITAL SIGNS MERCK BUTTONS -->
+    <record id="view_vet_vital_sign_form_merck" model="ir.ui.view">
+        <field name="name">vet.vital_sign.form.merck</field>
+        <field name="model">vet.vital_sign</field>
+        <field name="inherit_id" ref="vet_hospital.view_vet_vital_sign_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_search_merck_abnormality"
+                            type="object"
+                            string="🔍 Merck: Abnormality"
+                            class="oe_link"
+                            help="Search abnormality in Merck Vet Manual"
+                            invisible="not abnormalities"/>
+                </header>
+            </xpath>
+            <xpath expr="//page[@name='notes']" position="before">
+                <page string="Merck Reference" name="merck_ref">
+                    <div class="alert alert-success" role="status">
+                        <strong>Quick Reference Guide:</strong>
+                        <ul>
+                            <li>🔍 Click "Merck: Abnormality" button to search abnormal values</li>
+                            <li>📚 Merck Vet Manual opens in new tab for reference</li>
+                            <li>⚡ Fast access to veterinary medicine information</li>
+                            <li>💡 Use search results to verify diagnosis and treatment</li>
+                        </ul>
+                    </div>
+                    <group>
+                        <div class="o_form_group">
+                            <div class="o_form_label">Quick Links to Merck Vet Manual</div>
+                            <div style="margin-top: 10px;">
+                                <a href="https://www.msdvetmanual.com/" target="_blank" class="btn btn-sm btn-info" role="button">
+                                    📖 Open Merck Vet Manual (Full Site)
+                                </a>
+                            </div>
+                        </div>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- PRESCRIPTION MERCK BUTTONS -->
+    <record id="view_vet_prescription_form_merck" model="ir.ui.view">
+        <field name="name">vet.prescription.form.merck</field>
+        <field name="model">vet.prescription</field>
+        <field name="inherit_id" ref="vet_hospital.view_vet_prescription_form"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                <button name="action_search_merck_drug" 
+                        type="object" 
+                        string="🔍 Merck: Drug Info" 
+                        class="oe_link"
+                        help="Search medication in Merck Vet Manual"
+                        invisible="not medication_name"/>
+                <button name="action_search_merck_indication" 
+                        type="object" 
+                        string="🔍 Merck: Indication" 
+                        class="oe_link"
+                        help="Search drug indication in Merck Vet Manual"
+                        invisible="not instructions"/>
+            </header>
+            <xpath expr="//page[@name='safety']" position="before">
+                <page string="Merck Reference" name="merck">
+                    <div class="alert alert-info" role="status">
+                        <strong>✓ Drug Information from Merck Vet Manual</strong>
+                        <p style="margin-top: 10px;">
+                            Use the "Merck: Drug Info" and "Merck: Indication" buttons to verify:
+                        </p>
+                        <ul style="margin-top: 10px;">
+                            <li>✓ Dosage guidelines</li>
+                            <li>✓ Drug interactions</li>
+                            <li>✓ Contraindications</li>
+                            <li>✓ Side effects</li>
+                            <li>✓ Species-specific information</li>
+                        </ul>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- DIAGNOSIS MERCK BUTTONS -->
+    <record id="view_vet_diagnosis_form_merck" model="ir.ui.view">
+        <field name="name">vet.diagnosis.form.merck</field>
+        <field name="model">vet.diagnosis</field>
+        <field name="inherit_id" ref="vet_hospital.view_vet_diagnosis_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_search_merck"
+                            type="object"
+                            string="🔍 Search in Merck"
+                            class="oe_highlight"
+                            help="Search diagnosis in Merck Vet Manual"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- APPOINTMENT MERCK INTEGRATION -->
+    <record id="view_vet_appointment_form_merck" model="ir.ui.view">
+        <field name="name">vet.appointment.form.merck</field>
+        <field name="model">vet.appointment</field>
+        <field name="inherit_id" ref="vet_hospital.view_vet_appointment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[field[@name='patient_id']]" position="inside">
+                <div class="alert alert-info" role="status" style="margin-top: 15px;">
+                    <i class="fa fa-info-circle" title="Information"/>
+                    <strong>Merck Vet Manual Quick Links:</strong>
+                    <div style="margin-top: 8px;">
+                        <a href="https://www.msdvetmanual.com/" target="_blank" class="btn btn-sm btn-info" role="button" style="margin-right: 5px;">
+                            📖 Merck Manual
+                        </a>
+                        <span class="text-muted">Open Merck Vet Manual for reference during appointment</span>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- GLOBAL MERCK SEARCH PAGE -->
+    <record id="view_merck_search_page" model="ir.ui.view">
+        <field name="name">Merck Search Helper</field>
+        <field name="model">vet.patient</field>
+        <field name="type">form</field>
+        <field name="active" eval="False"/>
+        <field name="arch" type="xml">
+            <form string="Merck Vet Manual Search Helper">
+                <sheet>
+                    <div class="alert alert-success" role="status" style="margin: 20px;">
+                        <h2>🔍 Merck Vet Manual Integration</h2>
+                        <p style="margin-top: 10px;">
+                            This Odoo module integrates with Merck Vet Manual, the world's most trusted source 
+                            of veterinary medicine information.
+                        </p>
+                        <hr/>
+                        <h4>Quick Search From Any Module:</h4>
+                        <ul>
+                            <li><strong>Medical Records:</strong> Search diagnosis, symptoms, treatment plans</li>
+                            <li><strong>Prescriptions:</strong> Search drug information and indications</li>
+                            <li><strong>Vital Signs:</strong> Search abnormality information</li>
+                            <li><strong>Patients:</strong> Search breed and condition information</li>
+                            <li><strong>Diagnosis:</strong> Quick search diagnosis in Merck</li>
+                        </ul>
+                        <hr/>
+                        <h4>How to Use:</h4>
+                        <ol>
+                            <li>Open any medical record, prescription, or patient</li>
+                            <li>Click the 🔍 "Merck" button</li>
+                            <li>Merck Vet Manual opens in new tab with your search</li>
+                            <li>Review information and return to Odoo</li>
+                        </ol>
+                        <hr/>
+                        <div style="text-align: center; margin-top: 15px;">
+                            <a href="https://www.msdvetmanual.com/" target="_blank" class="btn btn-lg btn-primary" role="button">
+                                📖 Open Merck Vet Manual Now
+                            </a>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_merck_website" model="ir.actions.act_url">
+        <field name="name">MSD Veterinary Manual</field>
+        <field name="url">https://www.msdvetmanual.com/</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_merck_help" model="ir.actions.act_url">
+        <field name="name">Veterinary Manual Search Help</field>
+        <field name="url">https://www.msdvetmanual.com/resourcespages/faqs</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- MENU ITEM FOR MERCK -->
+    <menuitem
+        id="menu_merck_integration"
+        name="🔍 Merck Vet Manual"
+        parent="vet_hospital.menu_vet_hospital"
+        sequence="5"
+    />
+
+    <menuitem
+        id="menu_merck_direct"
+        name="Open Merck Website"
+        parent="menu_merck_integration"
+        action="action_merck_website"
+        sequence="1"
+    />
+
+    <menuitem
+        id="menu_merck_search"
+        name="Search Tips"
+        parent="menu_merck_integration"
+        action="action_merck_help"
+        sequence="2"
+    />
+</odoo>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem
+        id="menu_vet_hospital"
+        name="Veterinary Hospital"
+        web_icon="vet_hospital,static/description/icon.png"
+        sequence="1"
+    />
+
+    <!-- Dashboard -->
+    <menuitem
+        id="menu_vet_dashboard"
+        name="Dashboard"
+        parent="menu_vet_hospital"
+        action="vet_hospital.action_vet_dashboard"
+        sequence="1"
+    />
+
+    <!-- Patient Management -->
+    <menuitem
+        id="menu_vet_patient"
+        name="Patient Management"
+        parent="menu_vet_hospital"
+        sequence="10
+"
+    />
+
+    <menuitem
+        id="menu_vet_patient_list"
+        name="Patients"
+        parent="menu_vet_patient"
+        action="vet_hospital.action_vet_patient"
+        sequence="1"
+    />
+
+    <menuitem
+        id="menu_vet_patient_owner"
+        name="Owners"
+        parent="menu_vet_patient"
+        action="vet_hospital.action_vet_owner"
+        sequence="2"
+    />
+
+    <!-- Schedule & Appointments -->
+    <menuitem
+        id="menu_vet_appointment"
+        name="Schedule &amp; Appointments"
+        parent="menu_vet_hospital"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_vet_appointment_list"
+        name="Appointments"
+        parent="menu_vet_appointment"
+        action="vet_hospital.action_vet_appointment"
+        sequence="1"
+    />
+
+    <menuitem
+        id="menu_vet_appointment_calendar"
+        name="Calendar"
+        parent="menu_vet_appointment"
+        action="vet_hospital.action_vet_appointment_calendar"
+        sequence="2"
+    />
+
+    <menuitem
+        id="menu_vet_appointment_type"
+        name="Appointment Types"
+        parent="menu_vet_appointment"
+        action="vet_hospital.action_vet_appointment_type"
+        sequence="10"
+    />
+
+    <!-- Medical Records -->
+    <menuitem
+        id="menu_vet_medical"
+        name="Medical Records"
+        parent="menu_vet_hospital"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_vet_medical_record_list"
+        name="Medical Records"
+        parent="menu_vet_medical"
+        action="vet_hospital.action_vet_medical_record"
+        sequence="1"
+    />
+
+    <menuitem
+        id="menu_vet_vital_signs"
+        name="Vital Signs"
+        parent="menu_vet_medical"
+        action="vet_hospital.action_vet_vital_sign"
+        sequence="2"
+    />
+
+    <menuitem
+        id="menu_vet_diagnosis"
+        name="Diagnosis Codes"
+        parent="menu_vet_medical"
+        action="vet_hospital.action_vet_diagnosis"
+        sequence="10"
+    />
+
+    <!-- Prescriptions & Medications -->
+    <menuitem
+        id="menu_vet_prescription"
+        name="Prescriptions &amp; Medications"
+        parent="menu_vet_hospital"
+        sequence="40"
+    />
+
+    <menuitem
+        id="menu_vet_prescription_list"
+        name="Prescriptions"
+        parent="menu_vet_prescription"
+        action="vet_hospital.action_vet_prescription"
+        sequence="1"
+    />
+
+    <menuitem
+        id="menu_vet_medicine_product"
+        name="Medicines"
+        parent="menu_vet_prescription"
+        action="vet_hospital.action_vet_medicine_product"
+        sequence="2"
+    />
+
+    <!-- Billing -->
+    <menuitem
+        id="menu_vet_billing"
+        name="Billing &amp; Invoices"
+        parent="menu_vet_hospital"
+        sequence="50"
+    />
+
+    <!-- Reports -->
+    <menuitem
+        id="menu_vet_reports"
+        name="Reports"
+        parent="menu_vet_hospital"
+        sequence="60"
+    />
+
+    <menuitem
+        id="menu_vet_report_medical_record"
+        name="Medical Records Report"
+        parent="menu_vet_reports"
+        action="vet_hospital.action_vet_medical_record"
+        sequence="1"
+    />
+
+    <menuitem
+        id="menu_vet_report_appointment"
+        name="Appointment Report"
+        parent="menu_vet_reports"
+        action="vet_hospital.action_vet_appointment"
+        sequence="2"
+    />
+
+    <!-- Configuration -->
+    <menuitem
+        id="menu_vet_config"
+        name="Configuration"
+        parent="menu_vet_hospital"
+        sequence="99"
+    />
+
+    <menuitem
+        id="menu_vet_species"
+        name="Species &amp; Breeds"
+        parent="menu_vet_config"
+        action="vet_hospital.action_vet_species"
+        sequence="1"
+    />
+
+    <menuitem
+        id="menu_vet_breed"
+        name="Breeds"
+        parent="menu_vet_config"
+        action="vet_hospital.action_vet_breed"
+        sequence="2"
+    />
+</odoo>

@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vital Signs Tree View -->
+    <record id="view_vet_vital_sign_tree" model="ir.ui.view">
+        <field name="name">vet.vital_sign.tree</field>
+        <field name="model">vet.vital_sign</field>
+        <field name="arch" type="xml">
+            <list string="Vital Signs" sample="1">
+                <field name="date_time"/>
+                <field name="patient_id"/>
+                <field name="vet_id"/>
+                <field name="temperature" decoration-danger="not temperature_normal"/>
+                <field name="heart_rate" decoration-danger="not heart_rate_normal"/>
+                <field name="respiration" decoration-danger="not respiration_normal"/>
+                <field name="weight"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vital Signs Form View -->
+    <record id="view_vet_vital_sign_form" model="ir.ui.view">
+        <field name="name">vet.vital_sign.form</field>
+        <field name="model">vet.vital_sign</field>
+        <field name="arch" type="xml">
+            <form string="Vital Signs">
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="not abnormalities">
+                        <strong>⚠ ABNORMALITIES DETECTED:</strong>
+                        <field name="abnormalities" readonly="1"/>
+                    </div>
+
+                    <group>
+                        <group string="Date &amp; Provider">
+                            <field name="date_time"/>
+                            <field name="vet_id"/>
+                            <field name="medical_record_id"/>
+                            <field name="patient_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Temperature" name="temperature">
+                            <group>
+                                <group string="Temperature">
+                                    <field name="temperature" decoration-danger="not temperature_normal"/>
+                                    <field name="temperature_normal" readonly="1" widget="boolean_toggle"/>
+                                    <div class="alert alert-info" role="status">
+                                        Normal Range: 37.5 - 39.0°C
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Cardiovascular" name="cardiovascular">
+                            <group string="Heart Rate">
+                                <field name="heart_rate" decoration-danger="not heart_rate_normal"/>
+                                <field name="heart_rate_normal" readonly="1" widget="boolean_toggle"/>
+                                <div class="alert alert-info" role="status">
+                                    Dogs: 60-100 bpm | Cats: 110-140 bpm
+                                </div>
+                            </group>
+                            <group string="Blood Pressure">
+                                <field name="systolic"/>
+                                <field name="diastolic"/>
+                                <field name="blood_pressure_normal" readonly="1" widget="boolean_toggle"/>
+                                <div class="alert alert-info" role="status">
+                                    Normal: &lt;120/80 mmHg
+                                </div>
+                            </group>
+                        </page>
+
+                        <page string="Respiration" name="respiration">
+                            <group>
+                                <field name="respiration" decoration-danger="not respiration_normal"/>
+                                <field name="respiration_normal" readonly="1" widget="boolean_toggle"/>
+                                <div class="alert alert-info" role="status">
+                                    Normal Range: 10 - 30 breaths/min
+                                </div>
+                            </group>
+                        </page>
+
+                        <page string="Weight &amp; Body" name="weight">
+                            <group string="Weight">
+                                <field name="weight"/>
+                                <field name="weight_change" readonly="1"/>
+                            </group>
+                            <group string="Body Condition">
+                                <field name="body_condition_score"/>
+                                <field name="mucous_membrane_color"/>
+                                <field name="capillary_refill_time"/>
+                                <field name="skin_turgor"/>
+                                <field name="attitude"/>
+                            </group>
+                        </page>
+
+                        <page string="Notes" name="notes">
+                            <field name="abnormalities" placeholder="Any abnormalities or concerns..."/>
+                            <field name="notes" placeholder="Additional notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vital Signs Search View -->
+    <record id="view_vet_vital_sign_search" model="ir.ui.view">
+        <field name="name">vet.vital_sign.search</field>
+        <field name="model">vet.vital_sign</field>
+        <field name="arch" type="xml">
+            <search string="Vital Signs">
+                <field name="patient_id"/>
+                <field name="vet_id"/>
+                <separator/>
+                <filter string="Abnormal Temperature" name="temp_abnormal" domain="[('temperature_normal', '=', False)]"/>
+                <filter string="Abnormal Heart Rate" name="hr_abnormal" domain="[('heart_rate_normal', '=', False)]"/>
+                <filter string="Abnormal Respiration" name="resp_abnormal" domain="[('respiration_normal', '=', False)]"/>
+                <separator/>
+                <group>
+                    <filter string="Patient" name="patient" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Date" name="date" context="{'group_by': 'date_time'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Vital Signs Action -->
+    <record id="action_vet_vital_sign" model="ir.actions.act_window">
+        <field name="name">Vital Signs</field>
+        <field name="res_model">vet.vital_sign</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_vet_vital_sign_search"/>
+    </record>
+
+    <!-- Prescription Tree View -->
+    <record id="view_vet_prescription_tree" model="ir.ui.view">
+        <field name="name">vet.prescription.tree</field>
+        <field name="model">vet.prescription</field>
+        <field name="arch" type="xml">
+            <list string="Prescriptions" sample="1">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="patient_id"/>
+                <field name="medication_name"/>
+                <field name="dosage"/>
+                <field name="frequency"/>
+                <field name="vet_id"/>
+                <field name="status" decoration-success="status == 'active'" decoration-danger="status == 'discontinued'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Prescription Form View -->
+    <record id="view_vet_prescription_form" model="ir.ui.view">
+        <field name="name">vet.prescription.form</field>
+        <field name="model">vet.prescription</field>
+        <field name="arch" type="xml">
+            <form string="Prescription">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" invisible="status != 'draft'" class="oe_highlight"/>
+                    <button name="action_refill" type="object" string="Refill" invisible="status != 'active'"/>
+                    <button name="action_discontinue" type="object" string="Discontinue" invisible="status != 'active'"/>
+                    <field name="status" widget="statusbar" options="{'clickable': True}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Patient &amp; Provider">
+                            <field name="patient_id"/>
+                            <field name="owner_id" readonly="1"/>
+                            <field name="vet_id"/>
+                            <field name="date"/>
+                            <field name="medical_record_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Medication Details" name="medication">
+                            <group string="Medication">
+                                <field name="product_id" required="1"/>
+                                <field name="is_controlled" readonly="1"/>
+                            </group>
+
+                            <group string="Dosage &amp; Instructions">
+                                <field name="dosage" required="1" placeholder="e.g., 250mg"/>
+                                <field name="frequency" required="1"/>
+                                <field name="custom_frequency" invisible="frequency != 'other'" required="frequency == 'other'"/>
+                                <field name="route" required="1"/>
+                                <field name="duration" help="Number of days to take medication"/>
+                                <field name="instructions" placeholder="Special instructions, e.g., Take with food..."/>
+                            </group>
+
+                            <group string="Quantity &amp; Refills">
+                                <field name="quantity"/>
+                                <field name="unit_of_measure" readonly="1"/>
+                                <field name="refills"/>
+                                <field name="refills_remaining"/>
+                            </group>
+
+                            <group string="Validity">
+                                <field name="expiry_date"/>
+                            </group>
+                        </page>
+
+                        <page string="Safety Information" name="safety">
+                            <group string="Warnings &amp; Interactions">
+                                <field name="side_effects" placeholder="Possible side effects..."/>
+                                <field name="contraindications" placeholder="Contraindications..."/>
+                                <field name="drug_interactions" placeholder="Drug interactions..."/>
+                            </group>
+                        </page>
+
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Additional notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Prescription Search View -->
+    <record id="view_vet_prescription_search" model="ir.ui.view">
+        <field name="name">vet.prescription.search</field>
+        <field name="model">vet.prescription</field>
+        <field name="arch" type="xml">
+            <search string="Prescriptions">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="medication_name"/>
+                <field name="vet_id"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('status', '=', 'active')]"/>
+                <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]"/>
+                <filter string="Completed" name="completed" domain="[('status', '=', 'completed')]"/>
+                <filter string="Controlled Substances" name="controlled" domain="[('is_controlled', '=', True)]"/>
+                <separator/>
+                <group>
+                    <filter string="Patient" name="patient" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Medication" name="medication" context="{'group_by': 'product_id'}"/>
+                    <filter string="Status" name="status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Medicine Product Views -->
+    <record id="view_product_template_medicine_form" model="ir.ui.view">
+        <field name="name">product.template.medicine.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="before">
+                <group invisible="not is_medicine">
+                    <group string="Medicine Information">
+                        <field name="is_medicine"/>
+                        <field name="active_ingredient"/>
+                        <field name="strength"/>
+                        <field name="manufacturer"/>
+                    </group>
+                    <group string="Classification">
+                        <field name="drug_classification"/>
+                        <field name="is_controlled"/>
+                        <field name="requires_prescription"/>
+                        <field name="approved_for_animals"/>
+                    </group>
+                </group>
+                <group invisible="not is_medicine">
+                    <field name="min_dosage" placeholder="e.g., 1mg/kg"/>
+                    <field name="max_dosage" placeholder="e.g., 5mg/kg"/>
+                </group>
+                <group invisible="not is_medicine">
+                    <field name="contraindications"/>
+                    <field name="interactions"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_vet_medicine_product" model="ir.actions.act_window">
+        <field name="name">Medicines</field>
+        <field name="res_model">product.product</field>
+        <field name="domain">[('is_medicine', '=', True)]</field>
+        <field name="context">{'default_is_medicine': True}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Prescription Action -->
+    <record id="action_vet_prescription" model="ir.actions.act_window">
+        <field name="name">Prescriptions</field>
+        <field name="res_model">vet.prescription</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_vet_prescription_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+</odoo>

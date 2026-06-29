@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Pivot View for Patient Statistics -->
+    <record id="view_vet_patient_pivot" model="ir.ui.view">
+        <field name="name">vet.patient.pivot</field>
+        <field name="model">vet.patient</field>
+        <field name="type">pivot</field>
+        <field name="arch" type="xml">
+            <pivot string="Patient Analysis">
+                <field name="species_id" type="row"/>
+                <field name="status" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Dashboard Action -->
+    <record id="action_vet_dashboard" model="ir.actions.act_window">
+        <field name="name">Dashboard</field>
+        <field name="res_model">vet.patient</field>
+        <field name="view_mode">pivot,list,form</field>
+        <field name="view_id" ref="view_vet_patient_pivot"/>
+    </record>
+</odoo>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Canine Species -->
+        <record id="species_canine" model="vet.species">
+            <field name="name">Canine</field>
+            <field name="scientific_name">Canis lupus familiaris</field>
+            <field name="description">Dogs</field>
+        </record>
+
+        <record id="breed_labrador" model="vet.breed">
+            <field name="name">Labrador Retriever</field>
+            <field name="species_id" ref="species_canine"/>
+            <field name="average_weight">36</field>
+            <field name="life_expectancy">12</field>
+        </record>
+
+        <record id="breed_golden_retriever" model="vet.breed">
+            <field name="name">Golden Retriever</field>
+            <field name="species_id" ref="species_canine"/>
+            <field name="average_weight">32</field>
+            <field name="life_expectancy">12</field>
+        </record>
+
+        <record id="breed_german_shepherd" model="vet.breed">
+            <field name="name">German Shepherd</field>
+            <field name="species_id" ref="species_canine"/>
+            <field name="average_weight">34</field>
+            <field name="life_expectancy">11</field>
+        </record>
+
+        <record id="breed_beagle" model="vet.breed">
+            <field name="name">Beagle</field>
+            <field name="species_id" ref="species_canine"/>
+            <field name="average_weight">13</field>
+            <field name="life_expectancy">15</field>
+        </record>
+
+        <record id="breed_poodle" model="vet.breed">
+            <field name="name">Poodle</field>
+            <field name="species_id" ref="species_canine"/>
+            <field name="average_weight">20</field>
+            <field name="life_expectancy">15</field>
+        </record>
+
+        <record id="breed_bulldog" model="vet.breed">
+            <field name="name">Bulldog</field>
+            <field name="species_id" ref="species_canine"/>
+            <field name="average_weight">23</field>
+            <field name="life_expectancy">10</field>
+        </record>
+
+        <record id="breed_boxer" model="vet.breed">
+            <field name="name">Boxer</field>
+            <field name="species_id" ref="species_canine"/>
+            <field name="average_weight">32</field>
+            <field name="life_expectancy">10</field>
+        </record>
+
+        <!-- Feline Species -->
+        <record id="species_feline" model="vet.species">
+            <field name="name">Feline</field>
+            <field name="scientific_name">Felis catus</field>
+            <field name="description">Cats</field>
+        </record>
+
+        <record id="breed_persian" model="vet.breed">
+            <field name="name">Persian</field>
+            <field name="species_id" ref="species_feline"/>
+            <field name="average_weight">4.5</field>
+            <field name="life_expectancy">14</field>
+        </record>
+
+        <record id="breed_siamese" model="vet.breed">
+            <field name="name">Siamese</field>
+            <field name="species_id" ref="species_feline"/>
+            <field name="average_weight">3.6</field>
+            <field name="life_expectancy">15</field>
+        </record>
+
+        <record id="breed_maine_coon" model="vet.breed">
+            <field name="name">Maine Coon</field>
+            <field name="species_id" ref="species_feline"/>
+            <field name="average_weight">6.1</field>
+            <field name="life_expectancy">15</field>
+        </record>
+
+        <record id="breed_bengal" model="vet.breed">
+            <field name="name">Bengal</field>
+            <field name="species_id" ref="species_feline"/>
+            <field name="average_weight">4.5</field>
+            <field name="life_expectancy">14</field>
+        </record>
+
+        <record id="breed_domestic_shorthair" model="vet.breed">
+            <field name="name">Domestic Shorthair</field>
+            <field name="species_id" ref="species_feline"/>
+            <field name="average_weight">4</field>
+            <field name="life_expectancy">13</field>
+        </record>
+
+        <!-- Rabbit -->
+        <record id="species_rabbit" model="vet.species">
+            <field name="name">Rabbit</field>
+            <field name="scientific_name">Oryctolagus cuniculus</field>
+            <field name="description">Rabbits</field>
+        </record>
+
+        <record id="breed_holland_lop" model="vet.breed">
+            <field name="name">Holland Lop</field>
+            <field name="species_id" ref="species_rabbit"/>
+            <field name="average_weight">1.8</field>
+            <field name="life_expectancy">9</field>
+        </record>
+
+        <!-- Bird -->
+        <record id="species_bird" model="vet.species">
+            <field name="name">Bird</field>
+            <field name="description">Various bird species</field>
+        </record>
+
+        <!-- Small Rodents -->
+        <record id="species_rodent" model="vet.species">
+            <field name="name">Small Rodent</field>
+            <field name="description">Hamsters, Guinea Pigs, Rats, Mice</field>
+        </record>
+
+        <!-- Reptile -->
+        <record id="species_reptile" model="vet.species">
+            <field name="name">Reptile</field>
+            <field name="description">Snakes, Lizards, Turtles</field>
+        </record>
+    </data>
+</odoo>
