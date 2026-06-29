@@ -93,7 +93,7 @@ services:
         except Exception as e:
             print(f"Error checking database tables: {e}")
 
-        modules = "clinicflow_core,clinicflow_patient,clinicflow_clinical,clinicflow_billing,clinicflow_ai,clinicflow_outreach,base_accounting_kit"
+        modules = "base,clinicflow_core,clinicflow_patient,clinicflow_clinical,clinicflow_billing,clinicflow_ai,clinicflow_outreach,base_accounting_kit"
 
         env = os.environ.copy()
 
